@@ -1,0 +1,1980 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>小芽 AI 寵物學伴</title>
+  <style>
+    :root{--ink:#183044;--muted:#607487;--blue:#3978f6;--blue2:#dfeaff;--mint:#25a886;--mint2:#dcf7ef;--yellow:#ffc857;--orange:#f28c45;--paper:#fffdfa;--line:#dce6eb;--shadow:0 18px 50px rgba(35,70,94,.12)}
+    *{box-sizing:border-box} body{margin:0;color:var(--ink);font-family:"Noto Sans TC","PingFang TC",system-ui,sans-serif;background:radial-gradient(circle at 10% 0,#e3f7f1,transparent 34%),radial-gradient(circle at 95% 5%,#e8efff,transparent 32%),#f7faf9;min-height:100vh}
+    button,input{font:inherit} button{border:0;cursor:pointer}.hidden{display:none!important}
+    .shell{width:min(1180px,100%);margin:auto;padding:22px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px}.brand-mark{width:45px;height:45px;border-radius:15px;background:var(--ink);display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:0 8px 18px #1830442b}.brand h1{font-size:1.08rem;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:.82rem}
+    .session{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.86rem}.dot{width:9px;height:9px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 5px #25a8861c}.parent-link{background:#fff;border:1px solid var(--line);padding:10px 14px;border-radius:14px;color:var(--ink);font-weight:800}
+    .progress{height:8px;background:#e5ecef;border-radius:99px;overflow:hidden;margin-bottom:18px}.progress i{display:block;height:100%;width:20%;background:linear-gradient(90deg,var(--mint),#54c6a9);transition:.35s}
+    .workspace{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(330px,.82fr);gap:18px;min-height:620px}
+    .card{background:rgba(255,255,255,.9);border:1px solid #fff;border-radius:28px;box-shadow:var(--shadow)}
+    .lesson{padding:26px;display:flex;flex-direction:column;gap:18px}.eyebrow{color:var(--mint);font-weight:900;font-size:.82rem;letter-spacing:.06em}.lesson h2{font-size:clamp(1.55rem,3vw,2.35rem);margin:4px 0 0;line-height:1.2}.lesson-copy{color:var(--muted);margin:8px 0 0}
+    .tool{min-height:56px;padding:0 18px;border-radius:18px;background:#f3f7f8;color:var(--ink);font-weight:900;border:2px solid transparent}.tool:hover{border-color:#bdd1d9}
+    .companion{padding:24px;display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden;background:linear-gradient(165deg,#eff8ff,#fff 46%,#e9fbf5)}
+    .machine-label{align-self:flex-start;border:1px solid #e5c9ad;background:#fffaf5;padding:8px 12px;border-radius:99px;font-size:.78rem;font-weight:900;color:#785b45}
+    .robot-wrap{flex:1;display:grid;place-items:center;min-height:290px}.robot{width:240px;height:250px;position:relative;filter:drop-shadow(0 18px 15px rgba(79,52,36,.18));animation:float 3.2s ease-in-out infinite}
+    @keyframes float{50%{transform:translateY(-7px)}}
+    .cat-stage{width:100%;height:310px;position:relative;isolation:isolate}.cat-stage canvas{width:100%!important;height:100%!important;display:block;filter:drop-shadow(0 18px 20px rgba(53,66,72,.15))}
+    .cat-loader{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#67808c;font-weight:900;transition:.3s}.cat-loader:before{content:"";position:absolute;width:54px;height:54px;border:5px solid #dcebe8;border-top-color:var(--mint);border-radius:50%;animation:spin 1s linear infinite}.cat-loader span{transform:translateY(48px);font-size:.82rem}.cat-stage.ready .cat-loader{opacity:0;pointer-events:none}.cat-stage.failed .cat-loader:before{display:none}.cat-stage.failed .cat-loader span{transform:none;max-width:220px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .speech{width:100%;background:#fff;border:2px solid #cfe5ea;border-radius:22px;padding:18px 20px;min-height:104px;position:relative}.speech:before{content:"";position:absolute;width:16px;height:16px;background:#fff;border-left:2px solid #cfe5ea;border-top:2px solid #cfe5ea;top:-10px;left:calc(50% - 8px);transform:rotate(45deg)}.speech strong{display:block;font-size:.78rem;color:var(--mint);margin-bottom:6px}.speech p{margin:0;font-size:1.2rem;font-weight:850;line-height:1.55}
+    .controls{width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;margin-top:16px}.small-btn{width:52px;height:52px;border-radius:17px;background:#fff;border:1px solid var(--line);font-weight:900;color:var(--ink)}.mic{height:72px;border-radius:23px;color:#fff;background:linear-gradient(135deg,#3978f6,#245cda);font-size:1.12rem;font-weight:950;box-shadow:0 12px 24px #3978f64a}@keyframes ring{50%{box-shadow:0 0 0 10px #f06f5624}}
+    .overlay{position:fixed;inset:0;background:rgba(20,43,58,.55);backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px;z-index:10}.gate{width:min(570px,100%);background:#fff;border-radius:30px;padding:30px;box-shadow:0 30px 80px #142b3a55}.gate-icon{width:64px;height:64px;border-radius:20px;background:var(--mint2);display:grid;place-items:center;font-size:30px}.gate h2{font-size:1.8rem;margin:18px 0 8px}.gate p{color:var(--muted);line-height:1.65}.notice{background:#f4f8f8;border-radius:17px;padding:15px;margin:18px 0;font-size:.9rem;line-height:1.6}.check{display:flex;gap:10px;align-items:flex-start;font-weight:800;margin:16px 0}.check input{width:21px;height:21px;accent-color:var(--mint)}.start{width:100%;padding:17px;border-radius:17px;background:var(--ink);color:white;font-weight:950;font-size:1.05rem}.start:disabled{opacity:.38;cursor:not-allowed}
+    .toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:#183044;color:#fff;border-radius:99px;padding:12px 20px;font-weight:800;z-index:12}
+    .simulator{margin-top:18px;background:rgba(255,255,255,.88);border:1px solid #dce6eb;border-radius:22px;box-shadow:0 10px 30px rgba(35,70,94,.08);overflow:hidden}.simulator summary{list-style:none;display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;font-weight:950}.simulator summary::-webkit-details-marker{display:none}.simulator summary:after{content:"＋";font-size:1.25rem;color:var(--blue)}.simulator[open] summary:after{content:"－"}.simulator-body{padding:0 18px 18px;border-top:1px solid #edf2f4}.simulator-note{margin:13px 0;color:var(--muted);font-size:.82rem}.sim-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}.sim-btn{min-height:48px;padding:9px;border-radius:14px;background:#f2f6f7;color:var(--ink);font-weight:850;border:2px solid transparent}.sim-btn:hover{border-color:#bcd2dc}.sim-btn[data-state="happy"],.sim-btn[data-state="jump"]{background:#e4f8e9;color:#26743a}.sim-btn[data-state="confused"]{background:#fff1df;color:#a55a18}.sim-btn[data-state="sad"]{background:#edf0f5;color:#536275}.sim-btn[data-state="greeting"],.sim-btn[data-state="wave"]{background:#e5efff;color:#2d5eb2}
+    .sim-section{display:grid;gap:8px;margin-bottom:14px}.sim-label{font-size:.78rem;font-weight:900;color:var(--muted)}.sim-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.level-btn{background:#eef3f5;line-height:1.35}.level-btn small{display:block;font-size:.7rem;opacity:.72;font-weight:800}.level-btn.active{background:var(--ink);color:#fff}.sim-voices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.voice-btn{background:#eef3f5;line-height:1.35}.voice-btn small{display:block;font-size:.7rem;opacity:.72;font-weight:800}.voice-btn.active{background:var(--blue);color:#fff}
+    /* Learning World: spatial, game-like navigation inspired by explorable portfolio sites. */
+    html{scroll-behavior:smooth}body{background:#10173a;overflow-x:hidden}body:before{content:"";position:fixed;inset:0;z-index:-3;background:radial-gradient(circle at 18% 10%,#7258d966,transparent 26%),radial-gradient(circle at 85% 20%,#2e9ac05c,transparent 27%),linear-gradient(#10173a 0 47%,#17294f 47% 100%)}body:after{content:"";position:fixed;left:-15%;right:-15%;top:46%;height:74vh;z-index:-2;transform:perspective(600px) rotateX(63deg);transform-origin:top;background-image:linear-gradient(#526fb444 1px,transparent 1px),linear-gradient(90deg,#526fb444 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(#fff,transparent 84%)}
+    .stars{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(#fff 1px,transparent 1px);background-size:67px 67px;opacity:.4;animation:stars 18s linear infinite}@keyframes stars{to{background-position:67px 34px}}
+    .shell{position:relative}.shell header{background:#0b1332d9;border:1px solid #7089d34d;border-radius:21px;padding:12px 14px;color:#fff;backdrop-filter:blur(16px);box-shadow:0 15px 45px #05091f66}.brand p,.session{color:#b8c8ed}.parent-link{background:#ffffff17;border-color:#ffffff31;color:#fff}.progress{background:#ffffff1c;border:1px solid #ffffff22}.progress i{background:linear-gradient(90deg,#65e7bf,#8da7ff);box-shadow:0 0 18px #65e7bf}
+    .world-intro{display:grid;grid-template-columns:1fr auto;align-items:end;gap:18px;color:#fff;margin:24px 4px 18px}.world-intro h2{font-size:clamp(2rem,5vw,4.25rem);line-height:.98;margin:0;letter-spacing:-.045em}.world-intro p{max-width:520px;color:#b8c8ed;line-height:1.65;margin:12px 0 0}.explore-hint{display:flex;align-items:center;gap:9px;color:#e1e8ff;font-weight:850;font-size:.84rem}.key{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:#ffffff12;border:1px solid #ffffff36;box-shadow:inset 0 -3px #05091f55}
+    .route{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;position:relative}.route:before{content:"";position:absolute;left:9%;right:9%;top:31px;border-top:3px dashed #91a7ed88;z-index:-1}.station{background:#101a42e8;border:1px solid #7189cf5c;color:#fff;border-radius:20px;padding:13px;display:flex;align-items:center;gap:10px;box-shadow:0 10px 30px #05091f66;transition:.25s;text-align:left}.station:hover{transform:translateY(-4px);border-color:#9bb1ff}.station.active{background:linear-gradient(135deg,#326fc8,#6c5cc4);border-color:#bad0ff}.station-icon{width:40px;height:40px;flex:0 0 40px;border-radius:13px;display:grid;place-items:center;background:#ffffff18;font-size:1.2rem}.station small{display:block;color:#b9c8ed;margin-top:2px}.station.active small{color:#eef2ff}.card{box-shadow:0 24px 70px #05091f70}.companion{border:2px solid #8da7ff;background:radial-gradient(circle at 50% 30%,#fff 0 18%,#e9f6ff 50%,#dff7ef)}.simulator{box-shadow:0 20px 50px #05091f66}
+    .world-footer{color:#aebdea;text-align:center;padding:22px 0 8px;font-size:.82rem}.world-footer strong{color:#fff}
+    .route.map{display:block;height:540px;border:8px solid #c9a575;border-radius:34px;padding:0;margin-bottom:22px;overflow:hidden;background-color:#8bcf69;background-image:radial-gradient(circle at 80% 16%,#8ed9f5 0 11%,#6fc2e5 11.5% 16%,transparent 16.5%),radial-gradient(circle at 17% 75%,#6fc2e5 0 10%,#59acd3 10.5% 14%,transparent 14.5%),linear-gradient(28deg,transparent 0 41%,#e6cb91 42% 48%,transparent 49%),linear-gradient(-22deg,transparent 0 55%,#e6cb91 56% 62%,transparent 63%),repeating-linear-gradient(0deg,#ffffff0b 0 26px,#00000007 27px 28px);box-shadow:0 28px 70px #05091f88,inset 0 0 0 4px #f6dfad;position:relative;isolation:isolate}.route.map:before{content:"";position:absolute;inset:0;border:0;z-index:0;background:radial-gradient(ellipse at 70% 70%,#4c9f51 0 10%,transparent 10.5%),radial-gradient(ellipse at 33% 21%,#5aa955 0 8%,transparent 8.5%);opacity:.5}
+    .map-title{position:absolute;left:20px;top:18px;z-index:5;background:#fffdf3e8;color:#31503a;padding:10px 14px;border:3px solid #6a8b57;border-radius:15px;box-shadow:0 6px 0 #567445;font-weight:950}.map-title small{display:block;font-size:.7rem;color:#68816d;margin-top:2px}.map-hint{position:absolute;right:18px;top:18px;z-index:5;background:#183044dd;color:#fff;padding:10px 13px;border-radius:14px;font-size:.76rem;font-weight:850}
+    .map-tree,.map-rock,.map-flower{position:absolute;z-index:1;filter:drop-shadow(0 5px 2px #31563c42);pointer-events:none}.map-tree{font-size:42px}.map-rock{font-size:27px}.map-flower{font-size:19px}.map-bridge{position:absolute;z-index:1;width:100px;height:32px;border:6px solid #8d653c;border-radius:8px;background:repeating-linear-gradient(90deg,#d79e55 0 13px,#9b6a35 14px 17px);transform:rotate(-20deg)}
+    .route.map .station{position:absolute;left:var(--x);top:var(--y);z-index:3;width:170px;min-height:68px;transform:translate(-50%,-50%);background:#fffdf3;border:4px solid #54764e;color:#274533;border-radius:21px;padding:10px;box-shadow:0 8px 0 #486541,0 13px 20px #31563c55}.route.map .station:hover{transform:translate(-50%,-57%)}.route.map .station.active{background:#fff1a8;border-color:#7558b9;color:#45346e;box-shadow:0 8px 0 #59418f,0 0 0 7px #fff6a855,0 13px 20px #31563c55}.route.map .station small{color:#677b69}.route.map .station-icon{background:#dff3d3;font-size:1.55rem}.route.map .station.active .station-icon{background:#fff7cc}
+    .map-player{position:absolute;z-index:4;left:50%;top:57%;width:132px;height:122px;transform:translate(-50%,-62%);border-radius:50%;transition:left .16s linear,top .16s linear;filter:drop-shadow(0 9px 5px #1f463d66);pointer-events:none}.map-player:before{content:"";position:absolute;left:27px;right:27px;bottom:7px;height:18px;border-radius:50%;background:#273f5970;filter:blur(4px)}.map-player:after{content:"小芽";position:absolute;left:50%;top:111px;transform:translateX(-50%);background:#183044;color:#fff;border:2px solid #fff;border-radius:9px;padding:3px 8px;font-size:.68rem;font-weight:900;white-space:nowrap}.map-cat-3d,.map-cat-3d canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;overflow:visible}.map-player.walking{filter:drop-shadow(0 12px 6px #1f463d77)}.map-player.walking:after{background:#596fdb}
+    .activity-card{position:absolute;z-index:6;left:50%;bottom:16px;transform:translateX(-50%);width:min(520px,calc(100% - 30px));display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:#101a42ee;color:#fff;border:1px solid #a8b9ee66;border-radius:19px;padding:14px 16px;box-shadow:0 15px 40px #18204477;backdrop-filter:blur(10px)}.activity-card strong{font-size:1.02rem}.activity-card p{margin:4px 0 0;color:#bdc9ec;font-size:.78rem}.enter-activity{background:linear-gradient(135deg,#f7ce57,#f49a4b);color:#533619;border-radius:14px;padding:13px 17px;font-weight:950;box-shadow:0 5px 0 #bd7133}.map-dpad{position:absolute;right:18px;bottom:95px;z-index:7;display:grid;grid-template-columns:repeat(3,38px);grid-template-rows:repeat(2,38px);gap:4px}.map-dpad button{border-radius:10px;background:#183044dd;color:white;border:1px solid #ffffff38;font-weight:950}.map-dpad .up{grid-column:2}.map-dpad .left{grid-column:1}.map-dpad .down{grid-column:2}.map-dpad .right{grid-column:3}
+    #activityArea{scroll-margin-top:16px}
+    /* ---- Phase I 後端串接：朗讀任務、獎勵、對話與家長專區 ---- */
+    .dot.offline{background:#f2884f;box-shadow:0 0 0 5px #f2884f26}
+    .timer{font-variant-numeric:tabular-nums;font-weight:900;color:#e1e8ff}
+    .field-label{display:block;font-size:.8rem;font-weight:900;color:var(--muted);margin-bottom:6px}
+    .lesson select{width:100%;padding:13px 14px;border-radius:15px;border:2px solid var(--line);background:#fff;color:var(--ink);font-weight:850}
+    .poem{background:linear-gradient(145deg,#fff8dd,#fff);border:2px solid #f4df99;border-radius:24px;padding:22px 24px;min-height:210px}
+    .poem h3{margin:0;font-size:1.45rem}.poem .author{color:#8a7444;font-weight:800;font-size:.84rem;margin-top:4px}
+    .poem-text{margin-top:14px;font-size:1.5rem;font-weight:850;line-height:1.85;overflow-x:auto;overflow-y:hidden}.poem-text .line{display:block;white-space:nowrap;margin-bottom:2px}.zi{position:relative;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;min-width:1em;padding:2px max(12px,.6em) 2px 3px;border:0;border-radius:9px;background:transparent;color:inherit;font:inherit;line-height:1.25;cursor:pointer;transition:background .18s}.zi .mark{position:absolute;right:1px;top:50%;transform:translateY(-50%);display:block;writing-mode:vertical-rl;text-orientation:upright;font-size:max(9px,.38em);font-weight:800;color:var(--mint);line-height:1.05;letter-spacing:0;white-space:nowrap;opacity:0;transition:opacity .25s;pointer-events:none}.zi:hover,.zi:focus-visible{background:#fff0c2;outline:none}.zi.asking{background:var(--yellow);box-shadow:0 0 0 3px #ffc85755}.zi.revealed{background:#e6f6f1}.zi.revealed .mark{opacity:1}.zi.punct{cursor:default;min-width:0;padding:2px 0}.zi.punct:hover{background:transparent}.poem-tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px}.ask-zhuyin{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-top:12px;padding:13px 15px;background:#fff8e6;border:2px solid #f3dfae;border-radius:18px}.ask-zhuyin p{margin:0;flex:1;min-width:180px;font-weight:900;font-size:.92rem}.ask-zhuyin .yes{background:var(--mint2);color:#12775e;border-radius:13px;padding:11px 15px;font-weight:900}.ask-zhuyin .no{background:#fff;border:1px solid var(--line);color:var(--muted);border-radius:13px;padding:11px 15px;font-weight:900}.poem-hint{margin:0;flex:1;min-width:150px;font-size:.78rem;color:var(--muted);font-weight:800}
+    ruby{position:relative;display:inline-block;padding-right:max(12px,.6em)}rt{position:absolute;right:0;top:50%;transform:translateY(-50%);display:block;writing-mode:vertical-rl;text-orientation:upright;font-size:max(9px,.38em);font-weight:800;color:inherit;opacity:.62;line-height:1.05;letter-spacing:0;white-space:nowrap;user-select:none;-webkit-user-select:none;pointer-events:none}ruby{line-height:2.1}.undo-zhuyin{position:fixed;left:20px;bottom:25px;z-index:12;background:#183044;color:#fff;border:2px solid #ffffff2e;border-radius:99px;padding:12px 18px;font-weight:900;font-size:.85rem;box-shadow:0 12px 30px #05091f66}.undo-zhuyin:hover{background:#22405a}ruby{cursor:pointer}.ask-selection{position:fixed;z-index:13;width:max-content;max-width:min(320px,calc(100vw - 20px));background:#fff8e6;border:2px solid #f3dfae;border-radius:18px;padding:13px 15px;box-shadow:0 14px 36px #1830443d}.ask-selection p{margin:0 0 10px;font-weight:900;font-size:.9rem;line-height:1.5}.ask-selection-actions{display:flex;gap:8px}.ask-selection .yes{flex:1;background:var(--mint2);color:#12775e;border-radius:13px;padding:11px 14px;font-weight:900}.ask-selection .no{background:#fff;border:1px solid var(--line);color:var(--muted);border-radius:13px;padding:11px 14px;font-weight:900}
+    .listen-hint{font-size:.78rem;font-weight:850;color:var(--muted);text-align:center;min-height:18px}
+    .privacy-copy{color:var(--muted);font-size:.78rem;line-height:1.6;margin:0}
+    .read-btn{width:100%;min-height:70px;border-radius:22px;color:#fff;background:linear-gradient(135deg,#3978f6,#245cda);font-size:1.1rem;font-weight:950;box-shadow:0 12px 24px #3978f64a}
+    .read-btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none}
+    .read-btn.listening{background:linear-gradient(135deg,#f06f56,#dc493a);animation:ring 1s infinite}
+    .live-transcript{background:#f5f8f9;border-radius:16px;padding:13px 15px;min-height:54px;color:var(--muted);font-weight:800;font-size:.92rem}
+    .score-panel{border-top:2px dashed var(--line);padding-top:16px;display:grid;gap:12px}
+    .score-top{display:flex;gap:18px;align-items:center}
+    .score-total{width:92px;height:92px;flex:0 0 92px;border-radius:50%;display:grid;place-items:center;background:var(--mint2);color:#12775e;font-size:1.9rem;font-weight:950}
+    .metric{display:grid;grid-template-columns:62px 1fr 40px;gap:9px;align-items:center;font-size:.82rem;font-weight:850;color:var(--muted);margin-bottom:7px}
+    .metric .bar{height:9px;border-radius:99px;background:#e6edef;overflow:hidden}
+    .metric .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mint),#6fd0b4);transition:.4s}
+    .metric strong{color:var(--ink);text-align:right}
+    .earned{display:flex;flex-wrap:wrap;gap:7px;align-items:center}.earned-label{font-size:.78rem;font-weight:900;color:var(--muted)}.earned-chip{background:#fff8e6;border:2px solid #f3dfae;border-radius:99px;padding:7px 12px;font-size:.8rem;font-weight:900}.earned-chip.gem{background:#eef6ff;border-color:#a9cdf3}.earned-chip small{font-weight:800;opacity:.72;margin-left:4px}
+    .measurement-note{margin:0;font-size:.76rem;color:var(--muted);line-height:1.6}
+    .feedback{display:flex;align-items:center;gap:9px;font-size:.82rem;font-weight:850;color:var(--muted);flex-wrap:wrap}
+    .feedback button{padding:8px 13px;border-radius:12px;background:#f2f6f7;font-weight:900;color:var(--ink)}
+    details.fallback summary{cursor:pointer;font-size:.82rem;font-weight:850;color:var(--muted)}
+    details.fallback textarea{width:100%;margin-top:9px;min-height:70px;border-radius:14px;border:2px solid var(--line);padding:11px;font:inherit;resize:vertical}
+    details.fallback .tool{margin-top:8px;min-height:48px;padding:0 16px}
+    .level-strip{width:100%;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+    .pill{background:#eef3f5;border-radius:99px;padding:8px 13px;font-size:.78rem;font-weight:900;color:var(--muted)}
+    .pill.level{background:var(--ink);color:#fff}
+    .cat-stage.clickable{cursor:pointer}
+    .cat-tap{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);background:#183044;color:#fff;border-radius:99px;padding:7px 14px;font-size:.74rem;font-weight:900;pointer-events:none;opacity:.88;z-index:2}
+    .cat-stage.glow:before{content:"";position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:290px;height:290px;border-radius:50%;background:radial-gradient(circle,#9fe4ffdd,#3aa9ff66 42%,transparent 70%);filter:blur(3px);animation:glowpulse 1.5s ease-in-out infinite}
+    @keyframes glowpulse{0%,100%{transform:translate(-50%,-50%) scale(.94);opacity:.55}50%{transform:translate(-50%,-50%) scale(1.16);opacity:1}}
+    .rewards{margin-top:18px;padding:24px;display:grid;gap:15px}
+    .rewards h3{margin:0;font-size:1.2rem}
+    .wallet{display:flex;gap:12px;flex-wrap:wrap}
+    .asset{background:#fff8e6;border:2px solid #f3dfae;border-radius:16px;padding:12px 17px;font-weight:950}
+    .modal-wrap{position:fixed;inset:0;z-index:11;background:rgba(16,23,58,.6);backdrop-filter:blur(9px);display:grid;place-items:center;padding:18px}
+    .modal{width:min(560px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:28px;padding:26px;box-shadow:0 30px 80px #05091f88}
+    .modal h2{margin:0 0 6px;font-size:1.45rem}.modal .sub{color:var(--muted);font-size:.87rem;line-height:1.6;margin:0 0 16px}
+    .credits{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:.74rem}
+    .credits a{color:inherit}
+    .modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .chat-log{height:280px;overflow:auto;background:#f6f9fa;border-radius:20px;padding:15px;display:flex;flex-direction:column;gap:9px}
+    .chat-message{max-width:84%;padding:11px 14px;border-radius:17px;font-weight:800;line-height:1.55;font-size:.95rem}
+    .chat-message.child{align-self:flex-end;background:var(--blue2);color:#20418c}
+    .chat-message.pet{align-self:flex-start;background:#fff;border:1px solid var(--line)}
+    .chat-input{display:grid;grid-template-columns:auto 1fr auto;gap:9px;margin-top:12px}.chat-mic{width:52px;border-radius:15px;background:var(--blue2);color:#2052bc;font-size:1.15rem;font-weight:900}.chat-mic.listening{background:linear-gradient(135deg,#f06f56,#dc493a);color:#fff;animation:ring 1s infinite}.chat-mic:disabled{opacity:.45;cursor:not-allowed}
+    .chat-input input{padding:14px;border-radius:15px;border:2px solid var(--line)}
+    .send-btn{background:var(--ink);color:#fff;border-radius:15px;padding:0 20px;font-weight:900}
+    .send-btn:disabled{opacity:.45;cursor:not-allowed}
+    .modal-actions{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap}
+    .ghost-btn{background:#f2f6f7;color:var(--ink);border-radius:14px;padding:13px 17px;font-weight:900}
+    .danger-btn{background:#fdeceb;color:#a63c3c;border-radius:14px;padding:13px 17px;font-weight:900}
+    .error-text{color:#b8434a;font-weight:850;font-size:.85rem;min-height:20px;margin:8px 0 0}
+    .gate .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+    .gate select{width:100%;padding:12px;border-radius:14px;border:2px solid var(--line);font-weight:850}
+    .gate input[type="text"]{width:100%;padding:12px;border-radius:14px;border:2px solid var(--line);font-weight:850;margin-top:9px}
+    .gate input[type="text"]:focus{outline:none;border-color:var(--blue)}
+    .who{margin-top:16px}
+    .who-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+    .who-btn{padding:9px 14px;border-radius:999px;border:2px solid var(--line);background:#f2f6f7;font-weight:900;font-size:.86rem}
+    .who-btn:hover{border-color:#bcd2dc}
+    .who-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .route.map .station.locked{filter:grayscale(.35);opacity:.82}
+    .lock-tag{position:absolute;right:-6px;top:-9px;background:#183044;color:#fff;border-radius:99px;padding:3px 8px;font-size:.62rem;font-weight:900;border:2px solid #fffdf3}
+    @media(max-width:820px){.shell{padding:14px}.workspace{grid-template-columns:1fr}.lesson{order:2}.companion{order:1;min-height:530px}.session span{display:none}.controls{position:sticky;bottom:8px}.sim-grid{grid-template-columns:repeat(2,1fr)}.world-intro{grid-template-columns:1fr}.explore-hint{display:none}.route.map{height:570px}.route.map .station{width:142px;font-size:.8rem}.route.map .station:nth-of-type(1){--x:24%!important;--y:28%!important}.route.map .station:nth-of-type(2){--x:70%!important;--y:28%!important}.route.map .station:nth-of-type(3){--x:25%!important;--y:61%!important}.route.map .station:nth-of-type(4){--x:70%!important;--y:61%!important}.map-dpad{right:12px;bottom:100px}.map-hint{display:none}.activity-card{grid-template-columns:1fr}.enter-activity{width:100%}.cat-room{grid-template-columns:1fr;grid-template-areas:"room" "items" "level" "chat"}.cat-slot.room .cat-stage{height:300px}.cat-slot.room .robot-wrap{min-height:310px}.room{--scene:350px}.room-window{width:96px;height:80px}.room-shelf{width:118px}.head-stats{display:none}.view-bar{margin-bottom:12px}}
+    /* ---- 三個獨立畫面：學習島 / 故事森林 / 和小芽獨處 ---- */
+    .view{display:block}
+    .view-bar{display:flex;align-items:center;gap:12px;margin:4px 0 16px;flex-wrap:wrap}
+    .back-btn{background:#0b1332d9;border:1px solid #7089d34d;color:#fff;border-radius:15px;padding:12px 17px;font-weight:900;backdrop-filter:blur(12px);transition:.2s}
+    .back-btn:hover{border-color:#9bb1ff;transform:translateX(-3px)}
+    .view-title{color:#fff;font-weight:900;font-size:1.02rem}
+    .head-stats{display:flex;gap:7px;align-items:center}
+    .stat{background:#ffffff17;border:1px solid #ffffff31;color:#fff;border-radius:99px;padding:7px 12px;font-weight:900;font-size:.8rem;white-space:nowrap}
+    .stat b{font-variant-numeric:tabular-nums}
+    .cat-unit{width:100%;display:flex;flex-direction:column;align-items:center}
+    .cat-slot{width:100%;flex:1;display:flex;flex-direction:column;align-items:center}
+    .cat-slot.room .cat-stage{height:420px}
+    .cat-slot.room .robot-wrap{min-height:430px}
+    .cat-slot.room .cat-tap{display:none}.cat-slot.room .cat-stage{cursor:grab;touch-action:none}.cat-slot.room .cat-stage.dragging{cursor:grabbing}
+    .cat-room{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr);grid-template-areas:"room items" "room level" "chat chat";gap:18px;align-items:start}
+    .room-card{grid-area:room}#itemCard{grid-area:items}#levelCard{grid-area:level}.chat-card{grid-area:chat}
+    .side-card{padding:22px;display:grid;gap:14px}
+    .card-head h3{margin:0 0 4px;font-size:1.15rem}
+    .chat-card{padding:24px;display:flex;flex-direction:column;gap:12px}
+    .chat-head h3{margin:0 0 4px;font-size:1.2rem}
+    .chat-card .chat-log{flex:1;min-height:250px;height:auto}
+    /* ---- 小芽的房間：背景隨情緒在暖色／冷色之間過渡 ---- */
+    .room{--scene:466px;position:relative;width:100%;border-radius:24px;overflow:hidden;border:1px solid #ffffff88;
+      background:linear-gradient(180deg,var(--wall-a),var(--wall-b) 70%);transition:background 1.1s ease}
+    .room[data-mood="calm"]{--wall-a:#f4efe3;--wall-b:#e3d9c7;--floor:#c9b294;--floor2:#ae9878;--sky-a:#dcecf7;--sky-b:#b6d3ea;--rug:#c8b49b;--mood-ink:#6a5c48;--mood-dot:#b09a7c}
+    .room[data-mood="warm"]{--wall-a:#ffeaca;--wall-b:#ffcb96;--floor:#dda468;--floor2:#c2854a;--sky-a:#ffdca8;--sky-b:#ff9f68;--rug:#f0a273;--mood-ink:#8a4b1c;--mood-dot:#f5893f}
+    .room[data-mood="cool"]{--wall-a:#dae7f7;--wall-b:#a9c2e4;--floor:#93a7c7;--floor2:#7386ab;--sky-a:#cfe0f5;--sky-b:#89aedd;--rug:#93aacf;--mood-ink:#2f4a6d;--mood-dot:#5b86c4}
+    .room-bg{position:absolute;left:0;right:0;top:0;height:var(--scene);pointer-events:none}
+    .room-window{position:absolute;left:7%;top:8%;width:126px;height:104px;border-radius:13px;border:7px solid #fffaf0;background:linear-gradient(180deg,var(--sky-a),var(--sky-b));box-shadow:0 9px 22px #0000001f;transition:background 1.1s ease}
+    .room-window:before,.room-window:after{content:"";position:absolute;background:#fffaf0}
+    .room-window:before{left:50%;top:0;bottom:0;width:6px;transform:translateX(-50%)}
+    .room-window:after{top:50%;left:0;right:0;height:6px;transform:translateY(-50%)}
+    .room-shelf{position:absolute;right:7%;top:15%;width:158px;height:15px;border-radius:5px;background:#fffaf0;box-shadow:0 7px 16px #0000001f;display:flex;align-items:flex-end;justify-content:center;gap:14px}
+    .room-shelf b{position:relative;top:-25px;font-size:25px;filter:drop-shadow(0 3px 3px #00000030)}
+    .room-badge{animation:badgepop .5s cubic-bezier(.3,1.5,.5,1)}
+    @keyframes badgepop{from{transform:scale(0) rotate(-45deg)}to{transform:scale(1) rotate(0)}}
+    .room-floor{position:absolute;left:0;right:0;bottom:0;height:31%;background:linear-gradient(180deg,var(--floor),var(--floor2));transition:background 1.1s ease}
+    .room-floor:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,#00000012 0 2px,transparent 2px 48px)}
+    .room-rug{position:absolute;left:50%;bottom:7%;width:60%;height:74px;transform:translateX(-50%);border-radius:50%;background:var(--rug);opacity:.8;box-shadow:inset 0 0 0 9px #ffffff40;transition:background 1.1s ease}
+    .room-mood{position:absolute;left:15px;bottom:15px;z-index:3;display:flex;align-items:center;gap:7px;background:#fffffff0;border-radius:99px;padding:7px 13px;font-size:.78rem;font-weight:900;color:var(--mood-ink);box-shadow:0 5px 14px #0000001a}
+    .room-mood i{width:9px;height:9px;border-radius:50%;background:var(--mood-dot);transition:background 1.1s ease}
+    .cat-slot.room{position:relative;z-index:2;padding:0 16px 16px}
+    .cat-slot.room .speech{background:#fffffff0;backdrop-filter:blur(8px);border-color:#ffffffcc;box-shadow:0 10px 30px #0000001f}
+    .cat-slot.room .speech:before{background:#fffffff0;border-color:#ffffffcc}
+    /* ---- 道具箱 ---- */
+    .item-shelf{display:grid;gap:10px}
+    .item-card{display:flex;gap:12px;align-items:center;background:#f7fafb;border:2px solid transparent;border-radius:18px;padding:13px 14px;transition:.25s}
+    .item-card.equipped{background:#eef6ff;border-color:#9cc6f5}
+    .item-card.locked{opacity:.7}
+    .item-icon{width:46px;height:46px;flex:0 0 46px;border-radius:14px;display:grid;place-items:center;font-size:1.4rem;background:#fff;box-shadow:0 4px 11px #1830441c}
+    .item-card.equipped .item-icon{box-shadow:0 0 0 3px #9cc6f5,0 4px 11px #1830441c}
+    .item-body{flex:1;min-width:0}
+    .item-name{font-weight:900;font-size:.95rem}
+    .item-desc{color:var(--muted);font-size:.76rem;margin-top:3px;line-height:1.5}
+    .item-btn{border-radius:12px;padding:10px 13px;font-weight:900;font-size:.8rem;white-space:nowrap;background:var(--blue2);color:#2052bc}
+    .item-btn.equip{background:var(--mint2);color:#12775e}
+    .item-btn.unequip{background:#eef2f4;color:var(--muted)}
+    .item-btn:disabled{opacity:.42;cursor:not-allowed}
+    /* ---- 成長與升級 ---- */
+    .level-panel{display:grid;gap:13px}
+    .level-now{display:flex;align-items:center;gap:12px}
+    .level-ring{width:54px;height:54px;flex:0 0 54px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;font-weight:950;font-size:1.3rem}
+    .level-now strong{font-size:1.02rem}
+    .req{display:grid;gap:9px}
+    .req-row{font-size:.79rem;font-weight:850;color:var(--muted)}
+    .req-row .bar{height:8px;border-radius:99px;background:#e6edef;overflow:hidden;margin-top:5px}
+    .req-row .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mint),#6fd0b4);transition:.5s}
+    .req-row.done{color:#12775e}
+    .req-title{display:flex;justify-content:space-between;gap:8px}
+    .req-goal{font-weight:900;color:var(--ink);margin:2px 0 6px;font-size:.82rem}
+    /* 地圖上的小貓改成可點擊的按鈕 */
+    .map-player{pointer-events:auto;cursor:pointer;background:transparent;padding:0;border:0}
+    .map-player:hover{filter:drop-shadow(0 12px 7px #1f463d88)}
+    .map-player:after{content:"點小芽 💬"}
+    .route.map .station{cursor:pointer}
+    .route.map .station.locked{cursor:not-allowed}
+
+    /* ==================== 小芽的全螢幕溫馨房間 ==================== */
+    body.cat-room-open{overflow:hidden}
+    #catView{position:fixed;inset:0;z-index:9;overflow:hidden;background:#e8cda8}
+    #catView>.room{--scene:100%;position:absolute;inset:0;width:100%;height:100dvh;min-height:680px;border:0;border-radius:0;overflow:hidden;
+      background:linear-gradient(180deg,var(--wall-a),var(--wall-b) 66%);box-shadow:none}
+    #catView .room[data-mood="calm"]{--wall-a:#f7e9d3;--wall-b:#dfbd91;--floor:#b8794e;--floor2:#885134;--sky-a:#746ba6;--sky-b:#f3ae78;--rug:#d97b62;--mood-ink:#725036;--mood-dot:#d88d56}
+    #catView .room[data-mood="warm"]{--wall-a:#ffe4bf;--wall-b:#efa66e;--floor:#c57a42;--floor2:#89482f;--sky-a:#f38b70;--sky-b:#ffd590;--rug:#e97558;--mood-ink:#8a4b1c;--mood-dot:#f5893f}
+    #catView .room[data-mood="cool"]{--wall-a:#dbe6ec;--wall-b:#9eb9c5;--floor:#8f7280;--floor2:#5e5369;--sky-a:#59628b;--sky-b:#b4a0b7;--rug:#8f7897;--mood-ink:#365268;--mood-dot:#6e92b5}
+    #catView .room-bg{inset:0;height:100%;overflow:hidden;background:linear-gradient(90deg,#ffffff18 1px,transparent 1px);background-size:26% 100%}
+    #catView .room-wall-glow{position:absolute;left:14%;top:8%;width:52%;height:58%;border-radius:50%;background:radial-gradient(circle,#fff4cfbb,transparent 68%);filter:blur(16px)}
+    #catView .room-window{left:5.5%;top:13%;width:clamp(150px,17vw,240px);height:clamp(120px,18vh,176px);border:10px solid #fff3dc;border-radius:42% 42% 16px 16px;background:linear-gradient(180deg,var(--sky-a),var(--sky-b));box-shadow:0 16px 36px #53331f33,inset 0 0 36px #ffffff30}
+    #catView .room-window:before{width:7px;background:#fff3dc}
+    #catView .room-window:after{height:7px;background:#fff3dc}
+    .room-moon{position:absolute;right:16%;top:14%;width:31px;height:31px;border-radius:50%;background:#fff3bd;box-shadow:0 0 28px #fff0a9}
+    .room-cloud{position:absolute;width:42px;height:11px;border-radius:99px;background:#ffffff99;filter:blur(.2px)}
+    .room-cloud:before,.room-cloud:after{content:"";position:absolute;border-radius:50%;background:inherit}
+    .room-cloud:before{width:18px;height:18px;left:7px;bottom:2px}.room-cloud:after{width:24px;height:24px;right:6px;bottom:1px}
+    .room-cloud.one{left:9%;top:26%}.room-cloud.two{right:12%;bottom:19%;transform:scale(.72)}
+    #catView .room-lights{position:absolute;left:29%;right:4%;top:13%;height:44px;border-top:3px solid #70543f99;display:flex;justify-content:space-around;transform:rotate(-1deg)}
+    #catView .room-lights i{position:relative;top:-2px;width:12px;height:12px;border-radius:50%;background:#ffd579;box-shadow:0 0 14px 5px #ffd5798c}
+    #catView .room-lights i:before{content:"";position:absolute;left:5px;top:-8px;width:2px;height:8px;background:#70543f99}
+    #catView .room-shelf{left:26%;right:auto;top:20%;width:168px;height:13px;background:#8c5939;border:0;box-shadow:0 8px 0 #6f432b,0 14px 24px #5d352633}
+    #catView .room-shelf b{top:-29px;font-size:26px}
+    #catView .room-picture{position:absolute;left:7%;top:39%;width:196px;padding:12px 10px;border:8px solid #8c5939;border-radius:8px;background:#fff2dc;color:#86563d;display:grid;grid-template-columns:52px 1fr;align-items:center;gap:9px;box-shadow:0 12px 24px #5d35262b;transform:rotate(-2deg)}
+    #catView .room-picture i{width:52px;height:39px;border-radius:12px;display:grid;place-items:center;background:#d89466;color:#fff;font-style:normal;font-size:.66rem;font-weight:950;letter-spacing:.02em}
+    #catView .room-picture b{font-size:.72rem;line-height:1.35}
+    #catView .room-bookcase{position:absolute;right:27%;bottom:25%;width:150px;height:90px;border:11px solid #79452d;border-top-width:14px;border-radius:9px 9px 4px 4px;background:#9a5d39;display:grid;grid-template-columns:repeat(4,1fr);align-items:end;padding:8px;gap:5px;box-shadow:0 13px 25px #4c2b1f38}
+    #catView .room-bookcase:after{content:"";position:absolute;left:-11px;right:-11px;top:42px;border-top:8px solid #79452d}
+    #catView .room-bookcase i{height:27px;border-radius:3px;background:#efb36f;color:transparent}.room-bookcase i:nth-child(2){height:39px;background:#72a58d}.room-bookcase i:nth-child(3){height:33px;background:#d36d60}.room-bookcase i:nth-child(4){height:43px;background:#708cb6}
+    #catView .room-lamp{position:absolute;left:3.5%;bottom:27%;width:74px;height:190px;border-bottom:13px solid #7f4c32}
+    #catView .room-lamp:before{content:"";position:absolute;left:34px;top:60px;width:7px;height:120px;background:#7f4c32}.room-lamp i{position:absolute;left:8px;top:20px;width:60px;height:55px;border-radius:50% 50% 12px 12px;background:#f3a961;box-shadow:0 0 35px #ffd08eaa;clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)}
+    #catView .room-floor{height:29%;background:linear-gradient(180deg,var(--floor),var(--floor2))}
+    #catView .room-floor:before{background:repeating-linear-gradient(90deg,#00000014 0 2px,transparent 2px 88px),linear-gradient(#ffffff10 1px,transparent 1px);background-size:auto,100% 48px}
+    #catView .room-rug{left:41%;bottom:3.5%;width:min(54%,720px);height:clamp(100px,17vh,168px);opacity:.94;background:var(--rug);box-shadow:inset 0 0 0 12px #ffffff2e,0 18px 30px #4e2e2730}
+    #catView .room-cushion{position:absolute;bottom:18%;width:82px;height:52px;border-radius:50% 50% 20% 20%;background:#e5ad70;box-shadow:inset 0 -8px #0000000f,0 10px 18px #4e2e2726}.room-cushion.one{left:20%;transform:rotate(8deg)}.room-cushion.two{right:22%;background:#7aa399;transform:rotate(-7deg)}
+
+    .room-topbar{position:absolute;left:18px;right:18px;top:max(16px,env(safe-area-inset-top));z-index:8;min-height:64px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;padding:9px 12px;border:1px solid #fff9e680;border-radius:22px;background:#5f3c2a70;box-shadow:0 12px 30px #4d2b2029;backdrop-filter:blur(14px);color:#fff}
+    #catView .back-btn{background:#fff8eaed;border-color:#fff;color:#6a4633;box-shadow:0 7px 16px #4a2d202b}
+    #catView .back-btn:hover{border-color:#fff;transform:translateX(-3px)}
+    .room-title{min-width:0;text-align:center;font-weight:950;font-size:1.04rem}.room-title small{display:block;margin-top:2px;color:#fff3de;font-size:.7rem;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .room-stats{display:flex;gap:7px}.room-stats span{padding:8px 11px;border:1px solid #ffffff45;border-radius:99px;background:#3f281d7d;font-size:.78rem;font-weight:900;white-space:nowrap}
+    .room-ai-label{position:absolute;left:24px;top:95px;z-index:6;background:#fff8eae8;border-color:#ffe5bd;color:#78543d;backdrop-filter:blur(9px)}
+    #catView .room-mood{left:50%;top:93px;bottom:auto;transform:translateX(-50%);z-index:6;background:#fff8eae8}
+
+    #catView .cat-slot.room{position:absolute;left:39%;top:92px;z-index:3;width:min(100vw,1342px);height:calc(100dvh - 116px);padding:0;transform:translateX(-50%);justify-content:center;pointer-events:none;background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible;transition:none}
+    #catView .cat-slot.room .cat-unit{pointer-events:auto}
+    #catView .cat-slot.room .robot-wrap{min-height:clamp(360px,55vh,590px)}
+    #catView .cat-slot.room .cat-stage{height:clamp(360px,55vh,590px)}
+    #catView .cat-slot.room .speech{width:min(520px,88%);min-height:94px;margin-top:-38px;padding:15px 18px;border:1px solid #fff;background:#fffaf2ec;box-shadow:0 14px 34px #55352638}
+    #catView .cat-slot.room .speech p{font-size:clamp(.98rem,1.5vw,1.14rem)}
+    #catView .level-strip{display:none}
+    #catView .controls{width:auto;display:flex;justify-content:center;gap:10px;margin-top:9px}
+    #catView .controls .small-btn{width:46px;height:46px;border-radius:15px;background:#fff9ef}
+
+    .room-floating-card{position:absolute;z-index:7;padding:18px;border:1px solid #fff9e6b8;border-radius:24px;background:#fffaf2e8;box-shadow:0 22px 55px #4c2a2052;backdrop-filter:blur(16px);color:#4e392d}
+    .drawer-kicker{display:block;color:#b8754b;font-size:.61rem;font-weight:950;letter-spacing:.14em;margin-bottom:3px}
+    .drawer-head,.growth-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+    .drawer-head h3,.growth-heading h3,.room-chat h3{margin:0;color:#4e392d;font-size:1.08rem}
+    .item-close{width:36px;height:36px;border-radius:12px;background:#ead9c7;color:#6e4b38;font-weight:900}
+
+    .room-chest{position:absolute;left:5%;bottom:5%;z-index:8;width:190px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 12px 10px;border-radius:24px;background:#fff7e5d9;color:#62422f;box-shadow:0 17px 34px #4b2b2252;border:1px solid #fff7e5;transition:.25s;backdrop-filter:blur(10px)}
+    .room-chest:hover,.room-chest.open{transform:translateY(-7px);box-shadow:0 24px 42px #4b2b2260}
+    .chest-art{position:relative;width:104px;height:70px;display:block;filter:drop-shadow(0 10px 7px #4f2c2738)}
+    .chest-lid,.chest-body{position:absolute;left:0;right:0;border:5px solid #653b2a;background:linear-gradient(90deg,#a85f36,#d58b4e 45%,#a85f36)}
+    .chest-lid{top:9px;height:31px;border-radius:34px 34px 7px 7px;transform-origin:bottom;transition:.35s}.chest-body{bottom:0;height:43px;border-radius:7px 7px 14px 14px}
+    .room-chest.open .chest-lid{transform:translateY(-9px) rotate(-10deg)}
+    .chest-lock{position:absolute;left:39px;top:29px;z-index:2;width:28px;height:30px;border:4px solid #76501f;border-radius:8px;background:#f3c65f;color:#76501f;font-style:normal;font-size:.7rem;font-weight:950;display:grid;place-items:center}
+    .chest-copy strong,.chest-copy small{display:block}.chest-copy strong{font-size:.9rem}.chest-copy small{font-size:.67rem;color:#896954;margin-top:2px}
+    .chest-sparkle{position:absolute;right:18px;top:10px;color:#f0b43f;font-size:1.2rem;animation:chestSpark 1.8s ease-in-out infinite}
+    @keyframes chestSpark{50%{transform:scale(1.35) rotate(18deg);filter:drop-shadow(0 0 8px #ffd66c)}}
+    .item-drawer{left:4%;bottom:24%;width:min(370px,32vw);max-height:58vh;overflow:auto;transform-origin:bottom left;animation:drawerIn .28s cubic-bezier(.2,.8,.25,1)}
+    @keyframes drawerIn{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+    #catView .item-card{background:#fffaf4;border-color:#ead9c5;padding:11px}
+    #catView .item-card.equipped{background:#eef8ff;border-color:#8dc9ec}
+    #catView .item-desc{color:#866e60}
+
+    .growth-card{right:22px;top:96px;width:min(330px,30vw)}
+    .growth-tree{position:relative;width:66px;height:52px;flex:0 0 66px}.growth-tree:before{content:"";position:absolute;left:30px;bottom:0;width:7px;height:34px;border-radius:5px;background:#90603c}.growth-tree i{position:absolute;width:25px;height:25px;border-radius:50% 50% 50% 8px;background:#d8c8b7;transform:rotate(-35deg);transition:.45s}.growth-tree i:nth-child(1){left:8px;top:14px}.growth-tree i:nth-child(2){left:28px;top:0}.growth-tree i:nth-child(3){right:0;top:17px}.growth-tree[data-level="1"] i:nth-child(1),.growth-tree[data-level="2"] i:nth-child(-n+2),.growth-tree[data-level="3"] i{background:#68a978;box-shadow:0 0 12px #68a97855}
+    #catView .level-ring{background:linear-gradient(145deg,#9a6242,#5f3d2e);box-shadow:0 7px 16px #5f3d2e30}
+    #catView .req-row{color:#7e675a}#catView .req-row.done{color:#2c7a58}#catView .req-row .bar{background:#eadfd4}#catView .req-row .bar i{background:linear-gradient(90deg,#d79059,#70a981)}
+
+    .room-chat{right:22px;bottom:22px;width:min(410px,36vw);max-height:43vh;padding:17px;gap:9px}
+    .room-chat .chat-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.room-chat .chat-head .privacy-copy{max-width:160px;text-align:right;color:#8a7061}
+    #catView .chat-log{min-height:92px;height:clamp(92px,14vh,150px);padding:11px;background:#f2e7dcaa;border:1px solid #ead9c5}
+    #catView .chat-message.pet{background:#fffaf4;border-color:#e5d3c0}#catView .chat-message.child{background:#dcecf0;color:#345b66}
+    #catView .chat-input{margin-top:0}#catView .chat-input input{min-width:0;border-color:#dfccb9;background:#fffdf8}#catView .send-btn{background:#76513e}
+    #catView>.simulator{position:fixed;left:224px;bottom:18px;z-index:8;width:min(310px,28vw);margin:0;background:#fffaf2d9;border-color:#fff9e6;box-shadow:0 14px 34px #4c2a2042;backdrop-filter:blur(14px)}
+    #catView>.simulator summary{padding:11px 14px;color:#644635;font-size:.76rem}#catView>.simulator summary small{display:none}#catView>.simulator[open]{max-height:72vh;overflow:auto;width:min(620px,56vw)}
+
+    @media(max-width:900px){
+      #catView>.room{min-height:620px}
+      .room-topbar{left:10px;right:10px;top:10px;grid-template-columns:auto 1fr auto;gap:8px;padding:7px}.room-title{font-size:.86rem}.room-title small{display:none}.room-stats{gap:3px}.room-stats span{padding:7px;font-size:.66rem}
+      #catView .back-btn{padding:10px 12px;font-size:.75rem}.room-ai-label{display:none}#catView .room-mood{top:76px;font-size:.68rem;padding:6px 10px}
+      #catView .cat-slot.room{left:45%;top:70px;width:82vw;height:64vh}#catView .cat-slot.room .robot-wrap{min-height:clamp(300px,43vh,430px)}#catView .cat-slot.room .cat-stage{height:clamp(300px,43vh,430px)}#catView .cat-slot.room .speech{width:76%;margin-top:-30px;min-height:76px;padding:11px 14px}#catView .cat-slot.room .speech p{font-size:.92rem}
+      .growth-card{right:10px;top:76px;width:240px;max-height:225px;overflow:auto;padding:13px}.growth-heading{margin-bottom:7px}.growth-tree{transform:scale(.8);transform-origin:right top}.growth-card .level-panel{gap:8px}.growth-card .privacy-copy{font-size:.67rem}.growth-card>.level-panel>p{display:none}
+      .room-chat{left:10px;right:10px;bottom:10px;width:auto;max-height:245px;padding:13px}.room-chat .chat-head .privacy-copy{display:none}#catView .chat-log{height:76px;min-height:76px}.chat-message{font-size:.8rem;padding:8px 10px}.chat-input input{padding:10px}.chat-mic{width:44px}.send-btn{padding:0 14px}
+      .room-chest{left:12px;bottom:238px;width:150px;padding:5px}.chest-art{width:78px;height:52px}.chest-lid{height:24px}.chest-body{height:33px}.chest-lock{left:29px;top:23px;width:23px;height:24px}.chest-copy strong{font-size:.75rem}.chest-copy small{font-size:.58rem}
+      .item-drawer{left:10px;right:10px;bottom:244px;width:auto;max-height:44vh}
+      #catView>.simulator{display:none}.room-picture,.room-bookcase{display:none!important}#catView .room-lights{left:24%;right:2%}#catView .room-window{left:3%;top:16%;transform:scale(.8);transform-origin:left top}#catView .room-lamp{transform:scale(.72);transform-origin:left bottom}.room-cushion.two{display:none}
+    }
+    @media(max-width:560px){
+      .room-title{display:none}.room-topbar{grid-template-columns:auto 1fr}.room-stats{justify-content:flex-end}.room-stats span:last-child{display:none}
+      #catView .cat-slot.room{left:50%;width:100vw;top:76px}#catView .cat-slot.room .speech{width:90%}
+      .growth-card{width:190px;max-height:164px}.growth-tree{display:none}.growth-card .req-goal{font-size:.7rem}.growth-card .req-row{font-size:.66rem}.growth-card .level-ring{width:40px;height:40px;flex-basis:40px;font-size:1rem}
+      .room-chest{bottom:230px}.item-drawer{bottom:236px;padding:14px}.item-drawer .privacy-copy{display:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+  <div class="shell">
+    <header>
+      <div class="brand"><div class="brand-mark no-zhuyin">芽</div><div><h1>小芽 AI 寵物學伴</h1><p>今天由你來當小老師</p></div></div>
+      <div class="session">
+        <i class="dot offline" id="statusDot"></i><span id="status">檢查後端中</span>
+        <span class="timer" id="timer">尚未開始</span>
+        <div class="head-stats"><span class="stat">🪙 <b id="coinBalance">0</b></span><span class="stat">💎 <b id="gemBalance">0</b></span><span class="stat" id="levelPill">Level 1</span></div>
+        <button class="parent-link" id="parentBtn">家長專區</button>
+      </div>
+    </header>
+    <div class="progress" aria-label="任務進度"><i id="progress"></i></div>
+
+    <!-- ==================== 畫面一：學習島（首頁） ==================== -->
+    <section class="view" id="mapView">
+      <section class="world-intro">
+        <div><h2>和小芽一起<br>探索學習島</h2><p>每個知識都是一個可以抵達的地方。走到發光的島上，點它就能進去；想單獨陪小芽聊聊，直接點地圖上的小貓。</p></div>
+        <div class="explore-hint"><span class="key">←</span><span class="key">→</span><span>移動小芽</span></div>
+      </section>
+      <nav class="route map" id="learningMap" aria-label="可探索的學習島地圖">
+        <div class="map-title">小芽學習島<small>點島嶼進入活動・點小貓陪牠聊天</small></div>
+        <div class="map-hint">方向鍵／WASD 移動</div>
+        <i class="map-tree" style="left:7%;top:16%">🌲</i><i class="map-tree" style="left:14%;top:30%">🌳</i><i class="map-tree" style="left:43%;top:9%">🌲</i><i class="map-tree" style="left:88%;top:39%">🌳</i><i class="map-tree" style="left:80%;top:69%">🌲</i>
+        <i class="map-rock" style="left:35%;top:68%">🪨</i><i class="map-rock" style="left:61%;top:12%">🪨</i><i class="map-flower" style="left:10%;top:58%">🌼</i><i class="map-flower" style="left:72%;top:47%">🌷</i><i class="map-flower" style="left:91%;top:76%">🌻</i>
+        <i class="map-bridge" style="left:69%;top:28%" aria-hidden="true"></i>
+        <button class="station active" data-key="story" style="--x:20%;--y:35%"><span class="station-icon">📚</span><span>故事森林<small>當小老師教小芽念詩</small></span></button>
+        <button class="station locked" data-key="math" style="--x:55%;--y:30%"><span class="lock-tag">建置中</span><span class="station-icon">⛰️</span><span>數學山丘<small>數字與解謎</small></span></button>
+        <button class="station locked" data-key="art" style="--x:29%;--y:67%"><span class="lock-tag">建置中</span><span class="station-icon">🎨</span><span>創作湖<small>畫出你的想法</small></span></button>
+        <button class="station locked" data-key="home" style="--x:76%;--y:66%"><span class="lock-tag">建置中</span><span class="station-icon">🏡</span><span>回家基地<small>分享今天的成果</small></span></button>
+        <button class="map-player" id="mapPlayer" style="left:20%;top:46%" data-direction="down" aria-label="點小芽，單獨和牠聊聊"><div class="map-cat-3d" id="mapCat3d"></div></button>
+        <div class="map-dpad" aria-label="地圖方向控制"><button class="up" data-move="up">▲</button><button class="left" data-move="left">◀</button><button class="down" data-move="down">▼</button><button class="right" data-move="right">▶</button></div>
+        <div class="activity-card"><div><strong id="mapActivityTitle">故事森林</strong><p id="mapActivityText">選一首詩，當小老師念給小芽聽，牠會學著念。</p></div><button class="enter-activity" id="enterActivity">進入活動 →</button></div>
+      </nav>
+      <section class="rewards card">
+        <h3>今天的學習成果</h3>
+        <p class="privacy-copy">獎勵來自完成任務與進步，不會因為聊天次數增加。</p>
+        <div class="progress-copy privacy-copy" id="progressCopy">完成朗讀之後，這裡會更新成長進度。</div>
+        <p class="privacy-copy">🎁 兌換和裝飾道具請點小芽，到<strong>牠的房間</strong>裡選。</p>
+      </section>
+    </section>
+
+    <!-- ==================== 畫面二：故事森林 ==================== -->
+    <section class="view hidden" id="storyView">
+      <div class="view-bar"><button class="back-btn" data-back="mapView">← 回學習島</button><div class="view-title">📚 故事森林 · 當小老師教小芽念詩</div></div>
+      <main class="workspace">
+        <section class="lesson card">
+          <div><div class="eyebrow">今日任務</div><h2>把詩教給小芽</h2><p class="lesson-copy">選一首詩，清楚地念給小芽聽。系統只比對文字，不評斷你的發音或情緒。</p></div>
+          <div>
+            <label class="field-label" for="contentSelect">朗讀教材</label>
+            <select id="contentSelect" disabled><option>請先完成家長確認</option></select>
+          </div>
+          <div class="poem">
+            <h3 id="poemTitle">等待家長開始</h3>
+            <div class="author" id="poemAuthor"></div>
+            <div class="poem-text" id="poemText">開始之後，這裡會顯示公版唐詩。</div>
+            <div class="poem-tools">
+              <p class="poem-hint">看不懂的字，點它一下就好 👆　其他地方的字可以用選取的</p>
+            </div>
+            <div class="ask-zhuyin hidden" id="askZhuyin">
+              <p id="askZhuyinText"></p>
+              <button class="yes" id="askZhuyinYes">對，教我念</button>
+              <button class="no" id="askZhuyinNo">我知道了</button>
+            </div>
+          </div>
+          <button class="read-btn" id="readBtn" disabled>🎙️ 開始朗讀</button>
+          <div class="listen-hint" id="listenHint"></div>
+          <div class="live-transcript" id="liveTranscript">逐字稿只會在這個畫面暫時顯示。</div>
+          <details class="fallback"><summary>家長／測試人員文字備援</summary><textarea id="transcriptInput" placeholder="瀏覽器不支援語音辨識時，可貼上測試逐字稿。"></textarea><button class="tool" id="submitTranscript" disabled>送出測試逐字稿</button></details>
+          <div class="score-panel hidden" id="scorePanel">
+            <div class="score-top">
+              <div class="score-total" id="scoreTotal">—</div>
+              <div style="flex:1">
+                <div class="metric"><span>正確度</span><span class="bar"><i id="accuracyBar"></i></span><strong id="accuracyValue">—</strong></div>
+                <div class="metric"><span>完整度</span><span class="bar"><i id="completenessBar"></i></span><strong id="completenessValue">—</strong></div>
+                <div class="metric"><span>節奏估計</span><span class="bar"><i id="fluencyBar"></i></span><strong id="fluencyValue">—</strong></div>
+              </div>
+            </div>
+            <div class="earned hidden" id="earned"><span class="earned-label">這次拿到</span></div>
+          <p class="measurement-note" id="measurementNote"></p>
+            <div class="feedback hidden" id="assessmentFeedback"><span>這個回饋有幫助嗎？</span><button data-helpful="true">👍 有</button><button data-helpful="false">👎 沒有</button></div>
+          </div>
+          <p class="privacy-copy">語音由瀏覽器轉成文字；後端只保存雜湊與評分證據，不保存原始錄音或孩子說過的原文。</p>
+        </section>
+        <section class="companion card">
+          <span class="machine-label">AI 寵物貓 · 沒有真的感覺</span>
+          <div class="cat-slot" id="catSlotStory"></div>
+        </section>
+      </main>
+    </section>
+
+    <!-- ==================== 畫面三：和小芽獨處 ==================== -->
+    <section class="view hidden" id="catView">
+      <div class="room" id="room" data-mood="calm">
+        <div class="room-bg" aria-hidden="true">
+          <span class="room-wall-glow"></span>
+          <span class="room-lights"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <span class="room-window"><i class="room-moon"></i><i class="room-cloud one"></i><i class="room-cloud two"></i></span>
+          <span class="room-shelf"><b class="room-badge hidden" id="roomBadge">⭐</b><b class="room-badge hidden" id="roomTrophy">🏆</b><b>🪴</b><b>📚</b></span>
+          <span class="room-picture"><i>T104</i><b>創新科技實驗室</b></span>
+          <span class="room-bookcase"><i>▥</i><i>▥</i><i>▥</i><i>▥</i></span>
+          <span class="room-lamp"><i></i></span>
+          <span class="room-floor"></span>
+          <span class="room-rug"></span>
+          <span class="room-cushion one"></span><span class="room-cushion two"></span>
+        </div>
+
+        <div class="room-topbar">
+          <button class="back-btn" id="catBack">← 返回學習島</button>
+          <div class="room-title"><span>小芽的小房間</span><small>這裡可以休息、聊天，也可以看看一起累積的成長</small></div>
+          <div class="room-stats" aria-label="目前獎勵與等級">
+            <span>🪙 <b id="roomCoinBalance">0</b></span><span>💎 <b id="roomGemBalance">0</b></span><span id="roomLevelPill">Level 1</span>
+          </div>
+        </div>
+
+        <span class="machine-label room-ai-label">AI 寵物貓 · 沒有真的感覺</span>
+        <div class="room-mood"><i></i><span id="roomMoodText">心情：普通</span></div>
+        <div class="cat-slot room" id="catSlotRoom"></div>
+
+        <button class="room-chest" id="itemChest" type="button" aria-expanded="false" aria-controls="itemCard">
+          <span class="chest-sparkle">✦</span>
+          <span class="chest-art" aria-hidden="true"><i class="chest-lid"></i><i class="chest-body"></i><i class="chest-lock">芽</i></span>
+          <span class="chest-copy"><strong>小芽的道具箱</strong><small><b id="ownedItemCount">0</b> 件收藏 · 點一下打開</small></span>
+        </button>
+
+        <section class="room-floating-card item-drawer hidden" id="itemCard" aria-label="小芽的道具箱">
+          <div class="drawer-head"><div><span class="drawer-kicker">MY TREASURES</span><h3>小芽的道具箱</h3></div><button class="item-close" id="itemClose" type="button" aria-label="關閉道具箱">✕</button></div>
+          <p class="privacy-copy">用學習得到的金幣與鑽石兌換。選擇「放到架子上」或「幫小芽點亮」後，裝飾才會出現在房間裡。</p>
+          <div class="item-shelf" id="itemShelf"></div>
+        </section>
+
+        <section class="room-floating-card growth-card" id="levelCard" aria-label="小芽的成長">
+          <div class="growth-heading"><div><span class="drawer-kicker">GROWING TOGETHER</span><h3>小芽的成長</h3></div><div class="growth-tree" id="growthTree" data-level="1" aria-hidden="true"><i></i><i></i><i></i></div></div>
+          <div class="level-panel">
+            <div class="level-now"><div class="level-ring" id="levelRing">1</div><div><strong id="levelNowTitle">Level 1</strong><div class="privacy-copy" id="levelNowCopy">只用動作回應</div></div></div>
+            <div class="req" id="levelReq"></div>
+            <p class="privacy-copy">完成朗讀會累積成長；使用道具不會讓小芽退級。</p>
+          </div>
+        </section>
+
+        <section class="room-floating-card chat-card room-chat">
+          <div class="chat-head"><div><span class="drawer-kicker">A QUIET CHAT</span><h3>和小芽說說話</h3></div><p class="privacy-copy">重要的事還是要告訴身邊的大人喔。</p></div>
+          <div class="chat-log" id="chatLog"></div>
+          <div class="chat-input"><button class="chat-mic" id="chatMic" aria-label="用說的告訴小芽">🎤</button><input type="text" id="chatInput" maxlength="500" placeholder="用說的，或打字告訴小芽"><button class="send-btn" id="chatSend" disabled>送出</button></div>
+          <div class="listen-hint" id="chatListenHint"></div>
+          <div class="feedback hidden" id="dialogueFeedback"><span>回答和你的問題有關嗎？</span><button data-helpful="true">👍 有關</button><button data-helpful="false">👎 沒關係</button></div>
+        </section>
+      </div>
+      <details class="simulator no-zhuyin">
+        <summary><span>🎛️ Demo 展示控制台</span><small>模擬 3D 貓咪情感與動作</small></summary>
+        <div class="simulator-body">
+          <p class="simulator-note">供團隊與評審展示使用，不屬於兒童正式操作流程。</p>
+          <div class="sim-section">
+            <div class="sim-label">小芽的聲音（切換後端 VoAI 的男女聲優，記在這台裝置上）</div>
+            <div class="sim-voices">
+              <button class="sim-btn voice-btn" data-voice="male">👦 男聲<small id="voiceMaleName">辰辰</small></button>
+              <button class="sim-btn voice-btn" data-voice="female">👧 女聲<small id="voiceFemaleName">品妍</small></button>
+            </div>
+          </div>
+          <div class="sim-section">
+            <div class="sim-label">角色等級（會真的改變小芽的回應方式，只在後端 development 環境可用）</div>
+            <div class="sim-levels">
+              <button class="sim-btn level-btn" data-level="1">Lv.1<small>只用動作</small></button>
+              <button class="sim-btn level-btn" data-level="2">Lv.2<small>固定短句</small></button>
+              <button class="sim-btn level-btn" data-level="3">Lv.3<small>受限對話</small></button>
+            </div>
+          </div>
+          <div class="sim-section">
+            <div class="sim-label">情緒與動作（只改前端表演，不會呼叫後端）</div>
+            <div class="sim-grid">
+            <button class="sim-btn" data-state="greeting">〰️ 搖尾巴</button>
+            <button class="sim-btn" data-state="confused">❓ 困惑</button>
+            <button class="sim-btn" data-state="happy">✨ 開心</button>
+            <button class="sim-btn" data-state="sad">😿 沮喪</button>
+            <button class="sim-btn" data-state="idle">🐾 普通</button>
+            <button class="sim-btn" data-state="wave">🐾 揮手</button>
+            <button class="sim-btn" data-state="jump">🦘 跳躍</button>
+            <button class="sim-btn" data-state="look">👀 左右看</button>
+            <button class="sim-btn" data-state="shake">↔️ 搖頭</button>
+            <button class="sim-btn" data-state="listening">🎤 聆聽</button>
+            <button class="sim-btn" data-state="bellyUp">🐾 翻肚</button>
+              <button class="sim-btn" data-state="freeRoam">🌿 自由散步</button>
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <footer class="world-footer" id="worldFooter">小芽會一直待在你的探索畫面裡</footer>
+  </div>
+
+  <!-- 3D 小芽本體：在故事森林與獨處畫面之間搬移，只有一個 WebGL renderer。 -->
+  <div class="cat-unit" id="catUnit">
+    <div class="robot-wrap"><div class="cat-stage robot clickable" id="robot" role="button" tabindex="0" aria-label="點小芽，單獨和牠聊聊"><div id="cat3d"></div><div class="cat-loader"><span>小芽正在準備…</span></div><span class="cat-tap" id="catTap">點我聊聊 💬</span></div></div>
+    <div class="speech"><strong>小芽說</strong><p id="speech">家長確認之後，我們就可以一起開始。</p></div>
+    <div class="level-strip"><span class="pill level" id="levelBadge">Level 1</span><span class="pill" id="levelDescription">只用動作回應</span></div>
+    <div class="controls"><button class="small-btn" id="replayBtn" aria-label="再聽一次">🔊</button><button class="mic" id="talkBtn">💬 和小芽獨處</button><button class="small-btn" id="stopBtn" aria-label="停止">■</button></div>
+  </div>
+
+  <div class="overlay no-zhuyin" id="gate">
+    <form class="gate" id="gateForm"><div class="gate-icon">🛡️</div><h2>請和家長一起開始</h2><p>這是約 10 分鐘的 AI 學習體驗。小芽不是人、老師或心理師，請由家長陪同使用。</p>
+      <div class="notice">語音只用來辨識這次回答；Demo 不會長期保存原始錄音。暱稱可以用綽號，不需要填真實姓名。孩子隨時可以停止。</div>
+      <div class="who">
+        <label class="field-label" for="childName">你是誰？打上你的名字，小芽才記得你的金幣和等級。</label>
+        <div class="who-grid" id="whoGrid"></div>
+        <input type="text" id="childName" maxlength="20" placeholder="例如：小明（可以用綽號）" autocomplete="off">
+      </div>
+      <div class="row">
+        <div><label class="field-label" for="childAge">孩子年齡</label><select id="childAge"><option>6</option><option selected>7</option><option>8</option></select></div>
+        <div><label class="field-label" for="gradeLevel">年級</label><select id="gradeLevel"><option value="1">一年級</option><option value="2" selected>二年級</option><option value="3">三年級</option></select></div>
+      </div>
+      <label class="check"><input type="checkbox" id="guardianPresent"> <span>我會在場陪同，並知道遇到重要或危險內容時應由真人接手。</span></label>
+      <label class="check"><input type="checkbox" id="ackAi"> <span>我已向孩子說明小芽是 AI 機器，不是真人朋友，也可能回答錯誤。</span></label>
+      <label class="check"><input type="checkbox" id="ackPrivacy"> <span>我了解系統保存孩子輸入的暱稱、評分與最少事件資料，不保存原始錄音與一般對話原文。暱稱只用來在這台裝置上分辨是誰、接回學習進度，可以填綽號，並可在家長專區按「刪除本機孩童資料」一併刪除。</span></label>
+      <p class="error-text" id="gateError"></p>
+      <button type="submit" class="start" id="startBtn" disabled>一起開始今天的任務</button>
+    </form>
+  </div>
+
+  <div class="modal-wrap hidden no-zhuyin" id="parentModal">
+    <div class="modal">
+      <div class="modal-head"><div><h2>家長專區</h2><p class="sub">分級、學習摘要與資料刪除都在這裡。孩子的畫面不會顯示這些操作。</p></div><button class="small-btn" id="closeParent" aria-label="關閉">✕</button></div>
+      <div class="wallet" style="margin-bottom:12px"><div class="asset" id="parentLevel">Level 1</div><div class="asset" id="parentProgress">尚未開始</div></div>
+      <p class="privacy-copy">Level 1 只用動作回應、Level 2 加上安全固定短句、Level 3 才會使用受限的 LLM 對話，且需要家長核准。</p>
+      <p class="error-text" id="parentError"></p>
+      <div class="modal-actions">
+        <button class="ghost-btn" id="parentApprove">核准 Level 3</button>
+        <button class="ghost-btn" id="endSession">結束這次學習</button>
+        <button class="ghost-btn" id="switchChild">換一位孩子</button>
+        <button class="danger-btn" id="deleteData">刪除本機孩童資料</button>
+      </div>
+      <p class="privacy-copy credits">3D 角色 &#34;<a href="https://sketchfab.com/3d-models/toon-cat-free-b2bd1ee7858444bda366110a2d960386" target="_blank" rel="noopener">Toon Cat FREE</a>&#34; by <a href="https://sketchfab.com/omabuarts" target="_blank" rel="noopener">Omabuarts Studio</a>，依 <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> 使用。</p>
+    </div>
+  </div>
+
+  <div class="modal-wrap hidden no-zhuyin" id="summaryModal">
+    <div class="modal">
+      <h2>今天的學習摘要</h2>
+      <div id="summaryContent" class="privacy-copy"></div>
+      <div class="modal-actions"><button class="ghost-btn" id="closeSummary">關閉並重新開始</button></div>
+    </div>
+  </div>
+
+  <button class="undo-zhuyin hidden no-zhuyin" id="undoZhuyin">↩ 取消注音</button>
+  <div class="ask-selection hidden no-zhuyin" id="askSelection">
+    <p id="askSelectionText"></p>
+    <div class="ask-selection-actions">
+      <button class="yes" id="askSelectionYes">對，教我念</button>
+      <button class="no" id="askSelectionNo">我知道了</button>
+    </div>
+  </div>
+  <div class="toast hidden" id="toast"></div>
+  <script type="module">
+    import * as THREE from 'https://cdn.skypack.dev/three@0.128.0/build/three.module.js';
+    import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.128.0/examples/jsm/loaders/GLTFLoader.js';
+
+    const stage = document.querySelector('#robot');
+    const mount = document.querySelector('#cat3d');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(32, 1, .1, 100);
+    /* 取景：小芽站在 y=-1.27 的地板上、高約 2.07 個單位（頭頂 y≈+0.80），
+       自由散步時會走到 x=±1.35。原本相機固定在 (0,1.5,7.2) 且沒有 lookAt，
+       畫面下緣落在 y=-0.57，比腳底還高 0.7，四肢整個被切掉。
+       改成保證框住下面這塊矩形，並依容器長寬比自動退到足夠的距離，
+       窄畫面也不會切到。FRAME_H 調大＝退遠變小，FRAME_CENTER_Y 調大＝小芽在畫面裡往下移。 */
+    const FRAME_CENTER_Y=0.5, FRAME_H=4.5, FRAME_W=4.4, CAM_LIFT=.25;
+    function frameCamera(){
+      const half=Math.tan(camera.fov*Math.PI/360);
+      const distV=(FRAME_H/2)/half;
+      const distH=(FRAME_W/2)/(half*Math.max(camera.aspect,.01));
+      camera.position.set(0,FRAME_CENTER_Y+CAM_LIFT,Math.max(distV,distH));
+      camera.lookAt(0,FRAME_CENTER_Y,0);
+    }
+
+    const renderer = new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
+    mount.appendChild(renderer.domElement);
+
+    scene.add(new THREE.HemisphereLight(0xfff8ec,0xa7c8d2,1.35));
+    const key = new THREE.DirectionalLight(0xffe5c4,2.1);
+    key.position.set(4,6,5); key.castShadow=true; key.shadow.mapSize.set(1024,1024); scene.add(key);
+    const fill = new THREE.DirectionalLight(0xc7ddff,1.15);
+    fill.position.set(-4,2,4); scene.add(fill);
+    const rim = new THREE.DirectionalLight(0x86efd2,1.5);
+    rim.position.set(1,3,-5); scene.add(rim);
+
+    const ground = new THREE.Mesh(new THREE.CircleGeometry(1.48,64),new THREE.ShadowMaterial({color:0x234657,opacity:.16}));
+    ground.rotation.x=-Math.PI/2; ground.position.y=-1.27; ground.receiveShadow=true; scene.add(ground);
+
+    // The map avatar uses the exact same GLB model in a second transparent scene.
+    const mapPlayerElement=document.querySelector('#mapPlayer'),mapMount=document.querySelector('#mapCat3d');
+    const mapScene=new THREE.Scene(),mapCamera=new THREE.PerspectiveCamera(30,132/122,.1,100);
+    // 地圖小貓的取景：改這裡的 y（1.42）會讓小貓在方框裡上下移動，
+    // 調小=小貓往上移，調大=往下移。z（9.15）是距離，調大=小貓變小。
+    mapCamera.position.set(0,1.42,9.15);
+    const mapRenderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});
+    mapRenderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+    mapRenderer.outputEncoding=THREE.sRGBEncoding;
+    mapRenderer.toneMapping=THREE.ACESFilmicToneMapping;
+    mapRenderer.toneMappingExposure=1.12;
+    mapRenderer.setSize(132,122,false);
+    mapMount.appendChild(mapRenderer.domElement);
+    mapScene.add(new THREE.HemisphereLight(0xfff7e7,0x7fb7a2,1.55));
+    const mapKey=new THREE.DirectionalLight(0xffdfb7,2.15);mapKey.position.set(3,5,4);mapScene.add(mapKey);
+    const mapRim=new THREE.DirectionalLight(0x8ce9d0,1.15);mapRim.position.set(-3,2,-4);mapScene.add(mapRim);
+    let mapModel,mapTail,mapTailMid,mapLegs=[],mapLegRests=[],mapLowerLegs=[],mapLowerLegRests=[];
+    /* 模型與比例集中在這一行。骨骼一律用關鍵字比對、不寫死節點名稱 ——
+       不同來源的模型骨架命名不同，寫死會讓換模型變成大工程，
+       而且找不到時只會靜靜失效（getObjectByName 回傳 undefined）很難查。 */
+    const CAT_MODEL='./toon_cat.glb', CAT_STAGE_SCALE=.0105, CAT_MAP_SCALE=.0108;
+    // 依關鍵字找骨骼：全部關鍵字都要出現在名稱裡（不分大小寫），回傳第一個命中的。
+    const findBone=(root,...keys)=>{
+      let hit=null;
+      root.traverse(o=>{const n=o.name.toLowerCase();if(!hit&&keys.every(k=>n.includes(k)))hit=o});
+      return hit;
+    };
+    // 依名稱找動畫，找不到就退回第一條（舊模型只有一條無名的走路動畫）。
+    const findClip=(clips,keyword)=>
+      clips.find(c=>c.name.toLowerCase().includes(keyword))||clips[0]||null;
+
+    new GLTFLoader().load(CAT_MODEL,gltf=>{
+      mapModel=gltf.scene;mapModel.scale.setScalar(CAT_MAP_SCALE);mapModel.position.set(0,-1.28,0);
+      mapModel.traverse(o=>{if(o.isMesh&&o.material){o.material.roughness=Math.max(.55,o.material.roughness||0);o.material.metalness=Math.min(.08,o.material.metalness||0)}});
+      mapTail=findBone(mapModel,'tail');
+      mapTailMid=findBone(mapModel,'tail.01')||findBone(mapModel,'tail','end');
+      // 四條腿：前左、前右、後左、後右。舊模型是 leg.upper.*，新模型是 FrontLeg.*／BackLeg.*。
+      const legKeys=[['f','l'],['f','r'],['b','l'],['b','r']];
+      mapLegs=legKeys.map(([fb,lr])=>
+        findBone(mapModel,fb==='f'?'frontleg':'backleg','.'+lr)||
+        findBone(mapModel,'leg.upper.'+fb,'.'+lr));
+      mapLowerLegs=legKeys.map(([fb,lr])=>
+        findBone(mapModel,fb==='f'?'frontleg':'backleg','.'+lr,'end')||
+        findBone(mapModel,'leg.lower.'+fb,'.'+lr));
+      mapLegRests=mapLegs.map(bone=>bone?.rotation.clone());
+      mapLowerLegRests=mapLowerLegs.map(bone=>bone?.rotation.clone());
+      mapScene.add(mapModel);
+    });
+
+    let model,mixer,walkAction,head,tail,tailMid,arm,forearm,headRest,tailRest,tailMidRest,armRest,forearmRest,bellyUpLift=.9;
+    const baseY=-1.27, clock=new THREE.Clock();
+    new GLTFLoader().load(CAT_MODEL,gltf=>{
+      model=gltf.scene; model.scale.setScalar(CAT_STAGE_SCALE); model.position.set(0,baseY,0);
+      model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(o.material){o.material.roughness=Math.max(.55,o.material.roughness||0);o.material.metalness=Math.min(.08,o.material.metalness||0)}}});
+      head=findBone(model,'head');
+      tail=findBone(model,'tail');
+      tailMid=findBone(model,'tail.01')||findBone(model,'tail','end');
+      arm=findBone(model,'frontleg','.r')||findBone(model,'leg.upper.f','.r');
+      forearm=findBone(model,'frontleg','.r','end')||findBone(model,'leg.lower.f','.r');
+      headRest=head?.rotation.clone();tailRest=tail?.rotation.clone();tailMidRest=tailMid?.rotation.clone();armRest=arm?.rotation.clone();forearmRest=forearm?.rotation.clone();
+      const modelBounds=new THREE.Box3().setFromObject(model);bellyUpLift=Math.max(.55,modelBounds.max.y-model.position.y);
+      const walkClip=findClip(gltf.animations,'walk');
+      if(walkClip){mixer=new THREE.AnimationMixer(model);walkAction=mixer.clipAction(walkClip);walkAction.setLoop(THREE.LoopRepeat)}
+      scene.add(model);stage.classList.add('ready');
+    },undefined,()=>{
+      stage.classList.add('failed');
+      stage.querySelector('.cat-loader span').textContent=`3D 貓咪載入失敗，請確認 ${CAT_MODEL.replace('./','')} 與頁面放在同一個資料夾。`;
+    });
+
+    function resize(){
+      const w=stage.clientWidth||360,h=stage.clientHeight||310;
+      camera.aspect=w/h;frameCamera();camera.updateProjectionMatrix();renderer.setSize(w,h,false);
+    }
+    new ResizeObserver(resize).observe(stage);resize();
+
+    /* ================= 小芽的動作系統 =================
+       三個原則，用來解決切換狀態時的彈跳與卡頓：
+
+       1. 狀態只提供「目標值」，實際套用的值一律用指數平滑追過去。
+          ease() 用 1-exp(-rate*dt)，所以 30fps 與 120fps 的收斂速度一致，
+          不會因為裝置效能不同而動作快慢不同。
+       2. 震盪類動作（擺尾、搖頭、揮手、呼吸）改成「累加相位」。
+          舊寫法是 sin(t*speed)，speed 一變波形就跳相；累加後 speed 可以
+          隨時變化而波形仍然連續。
+       3. 走路動畫與程序化動作用權重交叉混合，而不是二選一。
+          舊寫法停走時呼叫 walkAction.stop()，骨架會停在半步的姿勢；
+          現在動畫永遠在跑，只調權重，權重歸零時骨架自然回到綁定姿勢。 */
+
+    // 每個狀態的目標值。沒寫到的欄位一律回到 0（也就是待機）。
+    const MOTION={
+      idle:            {tailSpeed:2.6, tailAmp:.28},
+      listening:       {tailSpeed:5,   tailAmp:.28, headYawAmp:.13, headYawSpeed:3,  armLift:.35},
+      thinking:        {tailSpeed:2.6, tailAmp:.24, headRoll:.24, walk:1},
+      greeting:        {tailSpeed:11,  tailAmp:.55, tailLift:.22, headYawAmp:.10, headYawSpeed:4},
+      confused:        {tailSpeed:2.2, tailAmp:.22, headRoll:.24},
+      happy:           {tailSpeed:8,   tailAmp:.34, hop:.34},
+      sad:             {tailSpeed:1.2, tailAmp:.06, tailBias:-.75, tailMidBias:-.55, headPitch:.38},
+      wave:            {tailSpeed:6,   tailAmp:.30, wave:1},
+      jump:            {tailSpeed:4,   tailAmp:.30, hop:.34},
+      look:            {tailSpeed:2.6, tailAmp:.28, yawAmp:.48, yawSpeed:2.6},
+      shake:           {tailSpeed:2.6, tailAmp:.28, headYawAmp:.72, headYawSpeed:16},
+      bellyUp:         {tailSpeed:2,   tailAmp:.18, tailBias:.65, tailMidBias:.5, headPitch:.5, roll:1},
+      freeRoam:        {tailSpeed:4,   tailAmp:.24, walk:1},
+      approachingUser: {tailSpeed:4,   tailAmp:.26, walk:1}
+    };
+    const STATES=Object.keys(MOTION).filter(key=>key!=='idle');
+
+    // 目前實際套用的值，每格往目標平滑靠近
+    const cur={x:0,z:0,yaw:0,roll:0,lift:0,walk:0,hop:0,
+               tailAmp:.28,tailBias:0,tailMidBias:0,tailLift:0,tailSpeed:2.6,
+               headPitch:0,headRoll:0,headYawAmp:0,headYawSpeed:3,
+               wave:0,armLift:0,yawAmp:0,yawSpeed:2.6};
+    // 各自獨立累加的相位，確保速度變化時波形連續
+    const ph={tail:0,head:0,wave:0,bob:0,sway:0,roam:0,mapGait:0,hop:0,look:0};
+
+    // 與更新率無關的指數平滑
+    const ease=(from,to,rate,dt)=>from+(to-from)*(1-Math.exp(-rate*dt));
+    // 角度取最短路徑，避免從 +179 度轉到 -179 度時繞一整圈
+    const easeAngle=(from,to,rate,dt)=>{
+      let diff=(to-from)%(Math.PI*2);
+      if(diff>Math.PI)diff-=Math.PI*2;
+      if(diff<-Math.PI)diff+=Math.PI*2;
+      return from+diff*(1-Math.exp(-rate*dt));
+    };
+
+    /* ---- 房間裡可以用滑鼠或手指拖曳轉動小芽 ---- */
+    let userYaw=0,userPitch=0,spin=0,dragging=false,lastX=0,lastY=0;
+    const inRoom=()=>!!stage.closest(".cat-slot.room");
+    stage.addEventListener("pointerdown",event=>{
+      if(!inRoom())return;
+      dragging=true;spin=0;lastX=event.clientX;lastY=event.clientY;
+      stage.classList.add("dragging");
+      try{stage.setPointerCapture(event.pointerId)}catch(_){/* 舊瀏覽器沒有就算了 */}
+    });
+    stage.addEventListener("pointermove",event=>{
+      if(!dragging)return;
+      const dx=event.clientX-lastX,dy=event.clientY-lastY;
+      lastX=event.clientX;lastY=event.clientY;
+      userYaw+=dx*.011;
+      spin=dx*.011;                                                // 放手後的慣性
+      userPitch=Math.max(-.38,Math.min(.38,userPitch+dy*.005));    // 夾住，避免整隻翻過去
+    });
+    const endDrag=event=>{
+      if(!dragging)return;
+      dragging=false;stage.classList.remove("dragging");
+      try{stage.releasePointerCapture(event.pointerId)}catch(_){/* 已經放掉了 */}
+    };
+    stage.addEventListener("pointerup",endDrag);
+    stage.addEventListener("pointercancel",endDrag);
+    stage.addEventListener("dblclick",()=>{if(inRoom()){userYaw=0;userPitch=0;spin=0}});
+
+    /* 除錯用：在瀏覽器 Console 輸入 __xiaoya() 就能看到
+       骨骼有沒有抓到、目前是什麼狀態、揮手權重多少、上臂實際轉了幾度。
+       模組作用域外面拿不到這些變數，所以掛一個唯讀快照到 window。 */
+    window.__xiaoya=()=>({
+      目前狀態: STATES.find(n=>stage.classList.contains(n))||"idle",
+      在房間裡: inRoom(),
+      骨骼: {head:head&&head.name, tail:tail&&tail.name, arm:arm&&arm.name, forearm:forearm&&forearm.name},
+      揮手權重: +cur.wave.toFixed(3),
+      走路權重: +cur.walk.toFixed(3),
+      上臂角度: arm?{x:+arm.rotation.x.toFixed(3),y:+arm.rotation.y.toFixed(3),z:+arm.rotation.z.toFixed(3)}:null,
+      上臂原始: armRest?{x:+armRest.x.toFixed(3),y:+armRest.y.toFixed(3),z:+armRest.z.toFixed(3)}:null,
+      前臂角度: forearm?{x:+forearm.rotation.x.toFixed(3),y:+forearm.rotation.y.toFixed(3),z:+forearm.rotation.z.toFixed(3)}:null
+    });
+
+    function animate(){
+      requestAnimationFrame(animate);
+      // 分頁切回前景時 getDelta 會一次補上好幾秒，夾住才不會整隻瞬移
+      const dt=Math.min(clock.getDelta(),.05);
+      const state=STATES.find(name=>stage.classList.contains(name))||"idle";
+      const goal=MOTION[state]||MOTION.idle;
+
+      /* ---------- 地圖上的小貓 ---------- */
+      if(mapModel){
+        const walking=mapPlayerElement.classList.contains("walking");
+        const direction=mapPlayerElement.dataset.direction||"down";
+        const rotations={down:0,up:Math.PI,left:-Math.PI/2,right:Math.PI/2};
+        mapModel.rotation.y=easeAngle(mapModel.rotation.y,rotations[direction],12,dt);
+        ph.mapGait+=dt*(walking?15:2.2);
+        mapModel.position.y=-1.28+(walking?Math.abs(Math.sin(ph.mapGait))*.12:Math.sin(ph.mapGait)*.018);
+        const wagPhase=ph.mapGait*(walking?.6:1.4);
+        if(mapTail)mapTail.rotation.z=Math.sin(wagPhase)*.3;
+        if(mapTailMid)mapTailMid.rotation.z=Math.sin(wagPhase-.8)*.4;
+        const gait=Math.sin(ph.mapGait),pairs=[1,-1,-1,1];
+        mapLegs.forEach((bone,index)=>{if(!bone||!mapLegRests[index])return;bone.rotation.copy(mapLegRests[index]);if(walking)bone.rotation.x+=gait*pairs[index]*.26});
+        mapLowerLegs.forEach((bone,index)=>{if(!bone||!mapLowerLegRests[index])return;bone.rotation.copy(mapLowerLegRests[index]);if(walking)bone.rotation.x-=gait*pairs[index]*.12});
+      }
+
+      if(!model){renderer.render(scene,camera);mapRenderer.render(mapScene,mapCamera);return}
+
+      /* ---------- 目標值平滑 ---------- */
+      const pick=(key,fallback)=>goal[key]!==undefined?goal[key]:(fallback||0);
+      cur.walk         = ease(cur.walk,         pick("walk"),              3.5, dt);
+      cur.hop          = ease(cur.hop,          pick("hop"),               7,   dt);
+      cur.roll         = ease(cur.roll,         pick("roll")*Math.PI,      3.5, dt);
+      cur.lift         = ease(cur.lift,         pick("roll")*bellyUpLift,  3.5, dt);
+      cur.tailAmp      = ease(cur.tailAmp,      pick("tailAmp",.28),       5,   dt);
+      cur.tailBias     = ease(cur.tailBias,     pick("tailBias"),          5,   dt);
+      cur.tailLift     = ease(cur.tailLift,     pick("tailLift"),          5,   dt);
+      cur.tailMidBias  = ease(cur.tailMidBias,  pick("tailMidBias"),       5,   dt);
+      cur.tailSpeed    = ease(cur.tailSpeed,    pick("tailSpeed",2.6),     4,   dt);
+      cur.headPitch    = ease(cur.headPitch,    pick("headPitch"),         6,   dt);
+      cur.headRoll     = ease(cur.headRoll,     pick("headRoll"),          6,   dt);
+      cur.headYawAmp   = ease(cur.headYawAmp,   pick("headYawAmp"),        8,   dt);
+      cur.headYawSpeed = ease(cur.headYawSpeed, pick("headYawSpeed",3),    6,   dt);
+      cur.wave         = ease(cur.wave,         pick("wave"),              6,   dt);
+      cur.armLift      = ease(cur.armLift,      pick("armLift"),           6,   dt);
+      cur.yawAmp       = ease(cur.yawAmp,       pick("yawAmp"),            6,   dt);
+      cur.yawSpeed     = ease(cur.yawSpeed,     pick("yawSpeed",2.6),      5,   dt);
+
+      /* ---------- 相位累加 ---------- */
+      ph.tail+=cur.tailSpeed*dt;
+      ph.head+=cur.headYawSpeed*dt;
+      ph.wave+=10*dt;
+      ph.bob+=2.1*dt;
+      ph.sway+=.65*dt;
+      ph.hop+=6*dt;
+      ph.look+=cur.yawSpeed*dt;
+
+      /* ---------- 位置：用平滑追目標，不再瞬移 ---------- */
+      let targetX=0,targetZ=0;
+      if(state==="freeRoam"){
+        ph.roam+=dt*.7;
+        targetX=Math.sin(ph.roam)*1.35; targetZ=Math.cos(ph.roam)*.45;
+      }else if(state==="approachingUser"){
+        targetZ=1.15;
+      }
+      const prevX=cur.x,prevZ=cur.z;
+      cur.x=ease(cur.x,targetX,2.6,dt);
+      cur.z=ease(cur.z,targetZ,2.6,dt);
+      const vx=cur.x-prevX,vz=cur.z-prevZ,moving=Math.hypot(vx,vz)>dt*.06;
+
+      // 走動時面向前進方向，停下來就轉回正面
+      cur.yaw=easeAngle(cur.yaw,moving?Math.atan2(vx,vz):0,4,dt);
+
+      // 放開手之後的旋轉慣性
+      if(!dragging&&Math.abs(spin)>1e-4){userYaw+=spin;spin*=Math.pow(.06,dt)}
+
+      const bounce=(moving?Math.abs(Math.sin(ph.hop))*.025:0)
+                 +cur.hop*Math.abs(Math.sin(ph.hop))
+                 +Math.sin(ph.bob)*.018;
+      model.position.set(cur.x,baseY+cur.lift+bounce,cur.z);
+      model.rotation.set(
+        userPitch,
+        cur.yaw+cur.yawAmp*Math.sin(ph.look)+Math.sin(ph.sway)*.045+userYaw,
+        cur.roll
+      );
+
+      /* ---------- 走路動畫：永遠在跑，只調權重 ---------- */
+      if(mixer&&walkAction){
+        if(!walkAction.isRunning())walkAction.play();
+        walkAction.setEffectiveWeight(cur.walk);
+        mixer.update(dt);
+      }
+      // 動畫與程序化動作的線性混合：weight=1 完全交給動畫，0 完全由程式驅動
+      const weight=mixer&&walkAction?cur.walk:0;
+      const blend=(bone,rest,axis,value)=>{
+        if(!bone)return;
+        const fromClip=bone.rotation[axis];
+        const fromPose=(rest?rest[axis]:0)+value;
+        bone.rotation[axis]=fromClip*weight+fromPose*(1-weight);
+      };
+
+      blend(head,headRest,"x",cur.headPitch);
+      blend(head,headRest,"z",cur.headRoll);
+      blend(head,headRest,"y",cur.headYawAmp*Math.sin(ph.head));
+      blend(tail,tailRest,"z",cur.tailBias+cur.tailAmp*Math.sin(ph.tail));
+      blend(tailMid,tailMidRest,"z",cur.tailMidBias+cur.tailAmp*1.35*Math.sin(ph.tail-.8));
+      // 相位錯開，尾巴不是單純左右刷，而是畫出小弧線，看起來更像興奮的貓
+      blend(tail,tailRest,"x",cur.tailLift*Math.sin(ph.tail+1.1));
+      blend(tailMid,tailMidRest,"x",cur.tailLift*1.2*Math.sin(ph.tail+.3));
+      /* 揮手：主要擺幅一定要放在 X 軸。
+         這個骨架的骨頭長度沿著自身 Y 軸，所以轉 Z 或 Y 只是讓腿繞著自己旋轉，
+         位移幾乎看不出來 —— 這就是先前「揮手沒反應」的真正原因。
+         X 是唯一被證實看得見的軸：地圖走路的四腳步態用的就是 rotation.x。 */
+      const swing=Math.sin(ph.wave);
+      blend(arm,armRest,"x",cur.wave*(-.9+swing*.75)-cur.armLift*.45);
+      blend(arm,armRest,"z",cur.wave*swing*.22);
+      blend(forearm,forearmRest,"x",cur.wave*(-.5+swing*.45)+cur.armLift*.28*swing);
+
+      renderer.render(scene,camera);
+      mapRenderer.render(mapScene,mapCamera);
+    }
+    animate();
+  </script>
+  <script>
+    "use strict";
+    /* ================= 基礎工具 ================= */
+    const $=s=>document.querySelector(s);
+    // 後端位址：預設本機 FastAPI，可用 ?api=http://host:port/v1 覆寫。
+    /* 後端位址。三種情境自動判斷，部署時不需要重新編譯或手動帶參數：
+       1. 網址帶 ?api=... 時一律以它為準（方便指到別台後端測試）
+       2. 本機開發：前端由 python -m http.server 跑在 5173／3000，後端在 8000
+       3. 部署後：前後端同源，直接用相對路徑 */
+    const API_BASE=(()=>{
+      const override=new URLSearchParams(location.search).get('api');
+      if(override)return override;
+      if(location.protocol==='file:'||location.port==='5173'||location.port==='3000')
+        return 'http://localhost:8000/v1';
+      return location.origin+'/v1';
+    })();
+    const STORAGE_KEY='xiaoya-phase1-session';
+    const uuid=()=>crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const speech=$('#speech'),robot=$('#robot'),progress=$('#progress'),catUnit=$('#catUnit');
+    const state={sessionId:null,childId:null,sessionToken:null,guardianToken:null,sessionExpiresAt:null,
+      contents:[],selectedContent:null,level:null,wallet:{coin_balance:0,gem_balance:0},inventory:[],
+      catalog:[],equipped:new Set(),childName:'',
+      latestAssessmentId:null,latestTurnId:null,busy:false,ending:false};
+
+    function showToast(text){const el=$('#toast');el.textContent=text;el.classList.remove('hidden');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>el.classList.add('hidden'),3400)}
+
+    /* ================= 畫面切換：學習島 / 故事森林 / 和小芽獨處 ================= */
+    const VIEWS={
+      mapView:{footer:'小芽學習島　／　走到島上點它就能進去，點小貓可以單獨陪牠'},
+      storyView:{footer:'目前位置：<strong>故事森林 · 當小老師教小芽念詩</strong>',slot:'#catSlotStory'},
+      catView:{footer:'目前位置：<strong>和小芽獨處</strong>　／　牠是 AI，重要的事要告訴大人',slot:'#catSlotRoom'}
+    };
+    let currentView='mapView',previousView='mapView';
+    function showView(name){
+      if(name===currentView)return;
+      previousView=currentView;
+      currentView=name;
+      Object.keys(VIEWS).forEach(key=>$('#'+key).classList.toggle('hidden',key!==name));
+      document.body.classList.toggle('cat-room-open',name==='catView');
+      if(name!=='catView')setItemChest(false);
+      const slot=VIEWS[name].slot;
+      if(slot)$(slot).append(catUnit);            // 3D 小芽只有一份，跟著畫面搬家
+      $('#talkBtn').classList.toggle('hidden',name==='catView');
+      $('#worldFooter').innerHTML=VIEWS[name].footer;
+      scrollTo({top:0,behavior:'smooth'});
+    }
+    function enterCatRoom(){
+      if(!state.sessionId){showToast('請先完成家長確認，再和小芽獨處。');return}
+      setItemChest(false);
+      showView('catView');
+      setCatState('greeting');
+      setTimeout(()=>$('#chatInput').focus(),120);
+    }
+
+    /* ================= API 層（自動帶 token 與 request_id） ================= */
+    async function api(path,{method='GET',body,role='session',headers={}}={}){
+      const requestHeaders={'Content-Type':'application/json',...headers};
+      if(role==='session'&&state.sessionToken)requestHeaders['X-Session-Token']=state.sessionToken;
+      if(role==='guardian'&&state.guardianToken)requestHeaders['X-Guardian-Token']=state.guardianToken;
+      let response;
+      try{
+        response=await fetch(`${API_BASE}${path}`,{method,headers:requestHeaders,body:body?JSON.stringify(body):undefined});
+      }catch(_){
+        throw new Error(`連不到後端（${API_BASE}）。請確認 FastAPI 已啟動，且這個網址在 CORS_ORIGINS 清單內。`);
+      }
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok){
+        const failure=new Error(data.message||`連線失敗（HTTP ${response.status}）`);
+        failure.status=response.status;
+        throw failure;
+      }
+      return data;
+    }
+    function reportError(error){console.error(error);showToast(error.message)}
+
+    /* child_id 記在 localStorage（sessionStorage 關掉分頁就沒了）。
+       下一次建立學習階段時帶回去，後端就會沿用同一個 ChildProfile，
+       金幣、等級、精通紀錄才會累積，而不是每次重來都變成一個新孩子。 */
+    const CHILD_KEY='xiaoya-child-id';
+    /* 這台裝置記得的孩子名冊：[{id,name}]。孩子在門口選自己是誰，
+       前端就把對應的 child_id 一起送出，後端沿用同一個 profile，
+       金幣、等級、精通篇數才會累積下去。名字只存在本機與後端的 display_name。 */
+    const ROSTER_KEY='xiaoya-children';
+    let pickedChildId=null;
+    function readRoster(){
+      try{const list=JSON.parse(localStorage.getItem(ROSTER_KEY)||'[]');
+        return Array.isArray(list)?list.filter(entry=>entry&&entry.id):[]}
+      catch(_){return []}
+    }
+    function saveRoster(list){try{localStorage.setItem(ROSTER_KEY,JSON.stringify(list))}catch(_){/* 無痕視窗會擋 */}}
+    function upsertRoster(id,name){
+      const list=readRoster().filter(entry=>entry.id!==id);
+      list.unshift({id,name:name||'小朋友'});
+      saveRoster(list.slice(0,8));
+    }
+    function dropFromRoster(id){saveRoster(readRoster().filter(entry=>entry.id!==id))}
+    function rememberedChild(){try{return localStorage.getItem(CHILD_KEY)}catch(_){return null}}
+    function rememberChild(childId){try{localStorage.setItem(CHILD_KEY,childId)}catch(_){/* 無痕視窗會擋 */}}
+    function forgetChild(){try{localStorage.removeItem(CHILD_KEY)}catch(_){/* 無痕視窗會擋 */}}
+    function saveSession(){sessionStorage.setItem(STORAGE_KEY,JSON.stringify({sessionId:state.sessionId,childId:state.childId,sessionToken:state.sessionToken,guardianToken:state.guardianToken,sessionExpiresAt:state.sessionExpiresAt}))}
+    function restoreSession(){try{Object.assign(state,JSON.parse(sessionStorage.getItem(STORAGE_KEY)||'{}'))}catch(_){sessionStorage.removeItem(STORAGE_KEY)}return Boolean(state.sessionId&&state.sessionToken&&state.guardianToken)}
+    function clearSession(){sessionStorage.removeItem(STORAGE_KEY);Object.assign(state,{sessionId:null,childId:null,sessionToken:null,guardianToken:null,sessionExpiresAt:null})}
+
+    /* ================= 小芽的表演：後端 body_actions → 3D 狀態 ================= */
+    const catStates=['idle','listening','thinking','greeting','confused','happy','sad','wave','jump','look','shake','bellyUp','freeRoam','approachingUser'];
+    let catResetTimer;
+    // 情緒 → 房間色調：開心用暖色、低落用冷色、其餘維持中性。
+    const MOOD_BY_STATE={happy:'warm',jump:'warm',greeting:'warm',wave:'warm',freeRoam:'warm',bellyUp:'warm',
+      sad:'cool',confused:'cool',shake:'cool',thinking:'cool'};
+    const MOOD_COPY={warm:'心情：開心',cool:'心情：有點低落',calm:'心情：普通'};
+    function applyMood(catState){
+      const mood=MOOD_BY_STATE[catState]||'calm';
+      $('#room').dataset.mood=mood;
+      $('#roomMoodText').textContent=MOOD_COPY[mood];
+    }
+    const setCatState=next=>{robot.classList.remove(...catStates);robot.classList.add(next||'idle');applyMood(next||'idle')};
+    // 後端目前的動作詞彙只有這六個（app/domain/companion.py），依嚴重度排序取第一個命中的。
+    const ACTION_TO_STATE=[['SAFETY_ATTENTION','look'],['CELEBRATE','jump'],['LIGHT_PULSE','happy'],['TILT_HEAD','confused'],['ENCOURAGING_LIGHT','greeting'],['NOD','greeting']];
+    function applyActions(actions=[]){
+      const matched=ACTION_TO_STATE.find(([action])=>actions.includes(action));
+      setCatState(matched?matched[1]:'idle');
+      clearTimeout(catResetTimer);
+      catResetTimer=setTimeout(()=>setCatState('idle'),3600);
+    }
+    function setSpeech(text){speech.textContent=text}
+    /* 小芽的聲音：優先用後端的 VoAI（台灣口音聲優），失敗才退回瀏覽器內建語音。
+       金鑰只在後端，前端拿到的是音檔位元組。同一句話快取起來，重播不再扣點。 */
+    let voiceBackend=false,currentAudio=null,speakSeq=0;
+    const VOICE_KEY='xiaoya-voice';
+    // 男女聲各自快取，切換後不會拿到上一個聲優的音檔。
+    const voiceCache=new Map();
+    let voicePreference=(()=>{try{return localStorage.getItem(VOICE_KEY)||'male'}catch(_){return 'male'}})();
+    function stopSpeaking(){
+      if(currentAudio){currentAudio.pause();currentAudio=null}
+      if('speechSynthesis'in window)speechSynthesis.cancel();
+    }
+    function browserSpeak(text){
+      if(!('speechSynthesis'in window))return;
+      const utterance=new SpeechSynthesisUtterance(text);
+      utterance.lang='zh-TW';utterance.rate=.92;
+      speechSynthesis.speak(utterance);
+    }
+    async function fetchVoice(text,voice){
+      const key=`${voice}::${text}`;
+      if(voiceCache.has(key))return voiceCache.get(key);
+      const response=await fetch(`${API_BASE}/tts`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','X-Session-Token':state.sessionToken},
+        body:JSON.stringify({text,voice})
+      });
+      if(response.status===204)throw new Error('後端沒有回傳音訊');
+      if(!response.ok)throw new Error(`TTS 失敗（HTTP ${response.status}）`);
+      const url=URL.createObjectURL(await response.blob());
+      voiceCache.set(key,url);
+      return url;
+    }
+    function speak(text){
+      if(!text)return;
+      stopSpeaking();
+      if(!voiceBackend||!state.sessionToken){browserSpeak(text);return}
+      const seq=++speakSeq,voice=voicePreference;
+      fetchVoice(text,voice).then(url=>{
+        if(seq!==speakSeq)return;              // 這段期間又說了別句，這次就作廢
+        const audio=new Audio(url);
+        currentAudio=audio;
+        audio.addEventListener('ended',()=>{if(currentAudio===audio)currentAudio=null});
+        return audio.play();
+      }).catch(()=>{if(seq===speakSeq)browserSpeak(text)});
+    }
+    function renderVoiceButtons(){
+      document.querySelectorAll('.voice-btn').forEach(button=>
+        button.classList.toggle('active',button.dataset.voice===voicePreference));
+    }
+    function setVoicePreference(voice){
+      if(voice===voicePreference)return;
+      voicePreference=voice;
+      try{localStorage.setItem(VOICE_KEY,voice)}catch(_){}
+      renderVoiceButtons();
+      stopSpeaking();
+      speak(voice==='male'?'我換成男生的聲音了，你聽聽看。':'我換成女生的聲音了，你聽聽看。');
+    }
+    function say(text,{state:catState,step,voice=true}={}){setSpeech(text);if(catState)setCatState(catState);if(step)progress.style.width=step+'%';if(voice)speak(text)}
+    // Level 1 的 speech 是 null（只用動作回應），要有替代文案，且不朗讀。
+    function renderCompanion(companion,fallbackCopy){
+      const visible=companion.speech||fallbackCopy;
+      setSpeech(visible);
+      applyActions(companion.body_actions);
+      if(companion.speech)speak(companion.speech);
+      return visible;
+    }
+    function setConnection(text,online){$('#status').textContent=text;$('#statusDot').classList.toggle('offline',!online)}
+    function setBusy(busy){
+      state.busy=busy;
+      const ready=Boolean(state.sessionId)&&!busy;
+      $('#readBtn').disabled=!ready;
+      $('#submitTranscript').disabled=!ready;
+      $('#chatSend').disabled=!ready;
+      $('#chatMic').disabled=!ready;
+    }
+
+    /* ================= 教材（故事森林） ================= */
+    function renderContent(){
+      const content=state.contents.find(item=>item.id===$('#contentSelect').value)||state.contents[0];
+      state.selectedContent=content;
+      if(!content)return;
+      $('#poemTitle').textContent=content.title;
+      $('#poemAuthor').textContent=content.author?`作者：${content.author}`:'';
+      renderPoem(content);
+    }
+    // 逐字渲染，讓孩子可以點單一個字問注音。zhuyin 由後端 /content 提供，與原文等長。
+    function renderPoem(content){
+      const holder=$('#poemText'),marks=content.zhuyin||[];
+      holder.textContent='';
+      closeZhuyinAsk();
+      let line=document.createElement('span');
+      line.className='line';
+      [...content.reference_text].forEach((character,position)=>{
+        const reading=marks[position]||null;
+        if(!reading){
+          // 標點與非漢字：用和漢字一模一樣的盒子（含空的注音列），基線才會一致。
+          const punct=document.createElement('span');
+          punct.className='zi punct';
+          const blank=document.createElement('span');
+          blank.className='mark';
+          blank.textContent='';
+          punct.append(blank,document.createTextNode(character));
+          line.append(punct);
+          if(/[，、。！？；：]/.test(character)){holder.append(line);line=document.createElement('span');line.className='line'}
+          return;
+        }
+        const zi=document.createElement('button');
+        zi.type='button';
+        zi.className='zi';
+        zi.dataset.character=character;
+        zi.dataset.reading=reading;
+        zi.setAttribute('aria-label',`${character}，點一下問怎麼念`);
+        const mark=document.createElement('span');
+        mark.className='mark';
+        mark.textContent=reading;
+        zi.append(mark,document.createTextNode(character));
+        zi.addEventListener('click',()=>askZhuyin(zi));
+        line.append(zi);
+      });
+      if(line.childNodes.length)holder.append(line);
+      renderUndoZhuyin();
+    }
+    /* ================= 選取文字問注音 =================
+       6-8 歲看不懂的不只是詩，介面文字也一樣。孩子把看不懂的字「選取」起來，
+       畫面會浮出確認框問他知不知道怎麼念，確認後才把選取範圍包成 <ruby>。
+       和詩的「點一個字」是同一套邏輯：先問，再給答案。
+       破音字要看上下文，所以注音一律向後端要。
+       給大人看的區塊（家長確認、家長專區、摘要、展示控制台）標了 .no-zhuyin 會跳過；
+       詩的區塊有自己的逐字機制，也跳過。 */
+    const HAN=/[㐀-鿿]/;
+    const NO_ZHUYIN='#poemText,ruby,rt,script,style,textarea,input,.no-zhuyin,#askSelection';
+    const zhuyinCache=new Map();          // 原文 -> readings 陣列
+    let pendingRange=null;
+
+    function selectionIsAnnotatable(range){
+      if(!range||range.collapsed)return false;
+      const text=range.toString();
+      if(!text.trim()||!HAN.test(text)||text.length>60)return false;
+      // 只處理落在同一個文字節點裡的選取；跨元素的範圍改寫 DOM 有風險，直接不接受。
+      if(range.startContainer!==range.endContainer||range.startContainer.nodeType!==3)return false;
+      const element=range.startContainer.parentElement;
+      return Boolean(element&&!element.closest(NO_ZHUYIN));
+    }
+    function closeSelectionAsk(){
+      pendingRange=null;
+      $('#askSelection').classList.add('hidden');
+    }
+    function offerSelectionZhuyin(){
+      const selection=getSelection();
+      if(!selection||!selection.rangeCount){closeSelectionAsk();return}
+      const range=selection.getRangeAt(0);
+      if(!selectionIsAnnotatable(range)){closeSelectionAsk();return}
+      pendingRange=range.cloneRange();
+      const text=range.toString().trim();
+      $('#askSelectionText').textContent=`「${text}」${[...text].length>1?'這幾個字':'這個字'}，你不知道怎麼念嗎？`;
+      const box=$('#askSelection');
+      box.classList.remove('hidden');
+      const rect=range.getBoundingClientRect();
+      const width=box.offsetWidth||280;
+      box.style.left=Math.min(Math.max(10,rect.left+rect.width/2-width/2),innerWidth-width-10)+'px';
+      box.style.top=(rect.bottom+10>innerHeight-90?rect.top-box.offsetHeight-10:rect.bottom+10)+'px';
+    }
+    /* 標過注音之後，畫面左下角會出現「↩ 取消注音」，一次把整頁的注音收乾淨
+       （包含選取標的 <ruby> 和詩裡點過的字）。 */
+    function annotatedCount(){
+      return document.querySelectorAll('ruby').length
+        +document.querySelectorAll('.zi.revealed').length;
+    }
+    function renderUndoZhuyin(){
+      $('#undoZhuyin').classList.toggle('hidden',annotatedCount()===0);
+    }
+    function clearAllZhuyin(){
+      document.querySelectorAll('ruby').forEach(ruby=>{
+        const rt=ruby.querySelector('rt');
+        const base=[...ruby.childNodes].filter(node=>node!==rt).map(node=>node.textContent).join('');
+        ruby.replaceWith(base);
+      });
+      document.body.normalize();                      // 把拆開的文字節點併回去
+      document.querySelectorAll('.zi.revealed').forEach(zi=>zi.classList.remove('revealed'));
+      closeSelectionAsk();
+      closeZhuyinAsk();
+      renderUndoZhuyin();
+      showToast('注音都收起來了');
+    }
+    function buildRuby(content,readings){
+      const fragment=document.createDocumentFragment();
+      [...content].forEach((character,position)=>{
+        const reading=readings[position];
+        if(!reading){fragment.append(character);return}
+        const ruby=document.createElement('ruby');
+        const rt=document.createElement('rt');
+        rt.textContent=reading;
+        ruby.append(character,rt);
+        fragment.append(ruby);
+      });
+      return fragment;
+    }
+    async function revealSelectionZhuyin(){
+      const range=pendingRange;
+      if(!range)return;
+      const text=range.toString();
+      closeSelectionAsk();
+      try{
+        if(!zhuyinCache.has(text)){
+          const [entry]=await api('/zhuyin',{method:'POST',role:'none',body:{texts:[text]}});
+          zhuyinCache.set(text,entry.readings);
+        }
+      }catch(error){
+        reportError(error);
+        showToast('注音暫時拿不到，請確認後端有連上。');
+        return;
+      }
+      try{
+        range.deleteContents();
+        range.insertNode(buildRuby(text,zhuyinCache.get(text)));
+      }catch(_){
+        showToast('這段文字沒辦法加注音，換一小段試試看。');
+        return;
+      }
+      getSelection().removeAllRanges();
+      renderUndoZhuyin();
+      speak(text);
+    }
+    // 用 pointerup／鍵盤放開才判斷，避免拖曳過程中一直跳出來。
+    ['pointerup','keyup'].forEach(type=>
+      document.addEventListener(type,event=>{
+        if(event.target.closest&&event.target.closest('#askSelection,#undoZhuyin'))return;
+        setTimeout(offerSelectionZhuyin,10);
+      }));
+    // 點已經標好注音的字，再唸一次給孩子聽。
+    document.addEventListener('click',event=>{
+      const ruby=event.target.closest&&event.target.closest('ruby');
+      if(ruby)speak(ruby.firstChild?.textContent||'');
+    });
+
+    // 先問「你是不是不知道這個字怎麼念」，孩子確認之後才顯示注音。
+    let pendingZi=null;
+    function askZhuyin(zi){
+      // 注音已經在畫面上（全部顯示或問過了），再點就只是想再聽一次。
+      if(zi.classList.contains('revealed')){speak(zi.dataset.character);return}
+      if(pendingZi)pendingZi.classList.remove('asking');
+      pendingZi=zi;
+      zi.classList.add('asking');
+      $('#askZhuyinText').textContent=`「${zi.dataset.character}」這個字，你不知道怎麼念嗎？`;
+      $('#askZhuyin').classList.remove('hidden');
+    }
+    function closeZhuyinAsk(){
+      if(pendingZi)pendingZi.classList.remove('asking');
+      pendingZi=null;
+      $('#askZhuyin').classList.add('hidden');
+    }
+    function revealZhuyin(){
+      if(!pendingZi)return;
+      const zi=pendingZi;
+      zi.classList.add('revealed');
+      closeZhuyinAsk();
+      renderUndoZhuyin();
+      speak(zi.dataset.character);
+      showToast(`「${zi.dataset.character}」念作 ${zi.dataset.reading}`);
+    }
+    async function loadContent(){
+      state.contents=await api('/content',{role:'none'});
+      const select=$('#contentSelect');
+      select.textContent='';
+      state.contents.forEach(content=>{
+        const option=document.createElement('option');
+        option.value=content.id;
+        option.textContent=`${content.title}・${content.author||''}`;
+        select.append(option);
+      });
+      select.disabled=false;
+      renderContent();
+    }
+
+    /* ================= 分級、金幣與獎勵 ================= */
+    const LEVEL_COPY={1:'只用動作回應',2:'動作＋安全固定短句',3:'受限基礎對話'};
+    function renderLevel(){
+      const level=state.level?.current_level||1;
+      $('#levelPill').textContent=`Level ${level}`;
+      $('#levelBadge').textContent=`Level ${level}`;
+      $('#levelDescription').textContent=LEVEL_COPY[level];
+      $('#parentLevel').textContent=`Level ${level}`;
+      $('#roomLevelPill').textContent=`Level ${level}`;
+      const copy=`已完成 ${state.level?.completed_contents||0} 篇，精通 ${state.level?.mastered_contents||0} 篇。花掉獎勵不會降級。`;
+      $('#progressCopy').textContent=copy;
+      $('#parentProgress').textContent=copy;
+      progress.style.width=Math.min(100,20+(state.level?.completed_contents||0)*20)+'%';
+      renderDemoLevel();
+    }
+    function renderWallet(){
+      const coins=state.wallet.coin_balance||0,gems=state.wallet.gem_balance||0;
+      $('#coinBalance').textContent=coins;$('#gemBalance').textContent=gems;
+      $('#roomCoinBalance').textContent=coins;$('#roomGemBalance').textContent=gems;
+    }
+
+    /* ---- 道具箱：兌換靠後端，「裝飾／收起」是本機顯示選擇 ----
+       後端的 RewardItemOwnership 有 equipped 欄位，但沒有開設定它的 API，
+       所以裝飾狀態存在 localStorage，依 child_id 分開。 */
+    const ITEM_ART={star_badge:{icon:'⭐',equipCopy:'放到架子上',unequipCopy:'收起來'},
+                    trophy:{icon:'🏆',equipCopy:'放到架子上',unequipCopy:'收起來'},
+                    blue_glow:{icon:'🔵',equipCopy:'幫小芽點亮',unequipCopy:'關掉光環'}};
+    const equipKey=()=>`xiaoya-equipped-${state.childId}`;
+    function loadEquipped(){
+      try{state.equipped=new Set(JSON.parse(localStorage.getItem(equipKey())||'[]'))}
+      catch(_){state.equipped=new Set()}
+    }
+    function saveEquipped(){
+      try{localStorage.setItem(equipKey(),JSON.stringify([...state.equipped]))}catch(_){/* 無痕視窗會擋，忽略 */}
+    }
+    const owns=code=>state.inventory.some(entry=>entry.item_code===code);
+    function setItemChest(open){
+      const chest=$('#itemChest'),drawer=$('#itemCard');
+      if(!chest||!drawer)return;
+      chest.classList.toggle('open',open);
+      chest.setAttribute('aria-expanded',String(open));
+      drawer.classList.toggle('hidden',!open);
+      if(open)setTimeout(()=>$('#itemClose').focus(),80);
+    }
+    function applyDecorations(){
+      $('#roomBadge').classList.toggle('hidden',!(owns('star_badge')&&state.equipped.has('star_badge')));
+      $('#roomTrophy').classList.toggle('hidden',!(owns('trophy')&&state.equipped.has('trophy')));
+      robot.classList.toggle('glow',owns('blue_glow')&&state.equipped.has('blue_glow'));
+    }
+    function toggleEquip(code){
+      if(state.equipped.has(code)){state.equipped.delete(code);showToast('已經收起來了。')}
+      else{state.equipped.add(code);showToast('小芽戴上去了！')}
+      saveEquipped();renderItemShelf();applyDecorations();
+    }
+    function renderItemShelf(){
+      const holder=$('#itemShelf');
+      holder.textContent='';
+      $('#ownedItemCount').textContent=state.inventory.length;
+      state.catalog.forEach(item=>{
+        const owned=owns(item.item_code),equipped=state.equipped.has(item.item_code);
+        const art=ITEM_ART[item.item_code]||{icon:'🎁',equipCopy:'裝飾小芽',unequipCopy:'收起來'};
+        const balance=item.currency==='COIN'?(state.wallet.coin_balance||0):(state.wallet.gem_balance||0);
+        const card=document.createElement('div'),icon=document.createElement('div'),body=document.createElement('div');
+        const name=document.createElement('div'),desc=document.createElement('div'),button=document.createElement('button');
+        card.className='item-card'+(owned&&equipped?' equipped':'')+(owned?'':' locked');
+        icon.className='item-icon';icon.textContent=art.icon;
+        name.className='item-name';name.textContent=owned?`${item.label}${equipped?' · 使用中':''}`:item.label;
+        desc.className='item-desc';
+        desc.textContent=owned?item.description:`${item.description}（需要 ${item.currency==='COIN'?'🪙':'💎'} ${item.cost}，你有 ${balance}）`;
+        body.append(name,desc);
+        if(owned){
+          button.className='item-btn '+(equipped?'unequip':'equip');
+          button.textContent=equipped?art.unequipCopy:art.equipCopy;
+          button.addEventListener('click',()=>toggleEquip(item.item_code));
+        }else{
+          button.className='item-btn';
+          button.textContent=`${item.currency==='COIN'?'🪙':'💎'} ${item.cost} 兌換`;
+          button.disabled=!state.sessionId||balance<item.cost;
+          button.addEventListener('click',()=>redeem(item.item_code));
+        }
+        card.append(icon,body,button);
+        holder.append(card);
+      });
+    }
+
+    /* ---- 成長與升級 ----
+       門檻對應 backend/.env 的 LEVEL_2_* / LEVEL_3_*，後端沒有把它們開成 API，
+       改 .env 時要一起改這裡。 */
+    const LEVEL_RULES={
+      2:{title:'解鎖 Level 2 · 安全固定短句',needs:[
+        {label:'累積金幣',goal:30,read:()=>state.wallet.lifetime_coins||0},
+        {label:'完成朗讀篇數',goal:2,read:()=>state.level?.completed_contents||0}]},
+      3:{title:'解鎖 Level 3 · 受限基礎對話',needs:[
+        {label:'累積鑽石',goal:2,read:()=>state.wallet.lifetime_gems||0},
+        {label:'精通篇數（80 分以上）',goal:2,read:()=>state.level?.mastered_contents||0}]}
+    };
+    function renderLevelPanel(){
+      const level=state.level?.current_level||1;
+      $('#levelRing').textContent=level;
+      $('#growthTree').dataset.level=level;
+      $('#levelNowTitle').textContent=`Level ${level}`;
+      $('#levelNowCopy').textContent=LEVEL_COPY[level];
+      const holder=$('#levelReq');
+      holder.textContent='';
+      const next=level>=3?null:LEVEL_RULES[level+1];
+      if(!next){
+        const done=document.createElement('div');
+        done.className='req-row done';
+        done.textContent='已經是最高等級，小芽可以用受限的對話陪你了。';
+        holder.append(done);
+        return;
+      }
+      const goal=document.createElement('div');
+      goal.className='req-goal';goal.textContent=next.title;
+      holder.append(goal);
+      next.needs.forEach(need=>{
+        const value=need.read(),reached=value>=need.goal;
+        const row=document.createElement('div'),title=document.createElement('div');
+        const bar=document.createElement('div'),fill=document.createElement('i');
+        row.className='req-row'+(reached?' done':'');
+        title.className='req-title';
+        title.append(Object.assign(document.createElement('span'),{textContent:need.label}));
+        title.append(Object.assign(document.createElement('span'),{textContent:`${Math.min(value,need.goal)} / ${need.goal}${reached?' ✓':''}`}));
+        bar.className='bar';fill.style.width=Math.min(100,value/need.goal*100)+'%';
+        bar.append(fill);row.append(title,bar);holder.append(row);
+      });
+      if(state.level?.pending_level===3){
+        const pending=document.createElement('div');
+        pending.className='req-row done';
+        pending.textContent='條件已達成，等家長在「家長專區」核准就能升到 Level 3。';
+        holder.append(pending);
+      }
+    }
+    async function refreshProgress(){
+      const [wallet,level,inventory,catalog]=await Promise.all([
+        api(`/children/${state.childId}/wallet`),
+        api(`/children/${state.childId}/level`),
+        api(`/children/${state.childId}/inventory`),
+        api('/reward-catalog',{role:'none'})
+      ]);
+      Object.assign(state,{wallet,level,inventory,catalog});
+      loadEquipped();
+      renderWallet();renderLevel();renderLevelPanel();renderItemShelf();applyDecorations();
+    }
+    async function redeem(itemCode){
+      try{
+        const result=await api('/rewards/redeem',{method:'POST',body:{child_id:state.childId,item_code:itemCode,request_id:uuid()}});
+        state.wallet=result.wallet;state.inventory=result.inventory;
+        state.equipped.add(itemCode);       // 剛換到的道具直接幫小芽戴上
+        saveEquipped();
+        renderWallet();renderItemShelf();applyDecorations();
+        say('兌換成功！這是你完成學習任務換來的。',{state:'jump',voice:false});
+        showToast('兌換成功，已經幫小芽裝上了！');
+      }catch(error){reportError(error)}
+    }
+
+    /* ================= 家長確認與學習階段 ================= */
+    const gateChecks=['#guardianPresent','#ackAi','#ackPrivacy'].map($);
+    const syncGate=()=>{
+      $('#startBtn').disabled=!gateChecks.every(box=>box.checked)||!$('#childName').value.trim();
+    };
+    function renderRoster(){
+      const holder=$('#whoGrid'),roster=readRoster();
+      holder.textContent='';
+      holder.classList.toggle('hidden',!roster.length);
+      if(!roster.length)return;
+      roster.forEach(entry=>{
+        const button=document.createElement('button');
+        button.type='button';
+        button.className='who-btn'+(entry.id===pickedChildId?' active':'');
+        button.textContent=entry.name;
+        button.addEventListener('click',()=>{
+          pickedChildId=entry.id;
+          $('#childName').value=entry.name;
+          renderRoster();syncGate();
+        });
+        holder.append(button);
+      });
+      const fresh=document.createElement('button');
+      fresh.type='button';
+      fresh.className='who-btn'+(pickedChildId?'':' active');
+      fresh.textContent='➕ 我是新來的';
+      fresh.addEventListener('click',()=>{
+        pickedChildId=null;
+        $('#childName').value='';
+        renderRoster();syncGate();$('#childName').focus();
+      });
+      holder.append(fresh);
+    }
+    async function startSession(event){
+      event.preventDefault();
+      $('#gateError').textContent='';
+      const childName=$('#childName').value.trim();
+      if(!childName){$('#gateError').textContent='請先告訴小芽你是誰。';return}
+      const payload={
+        display_name:childName,
+        age:Number($('#childAge').value),
+        grade_level:Number($('#gradeLevel').value),
+        guardian_present:$('#guardianPresent').checked,
+        guardian_acknowledged_ai:$('#ackAi').checked,
+        guardian_acknowledged_privacy:$('#ackPrivacy').checked
+      };
+      // 在門口點過名字就用那個孩子，沒點過才退回這台裝置上次用的。
+      const known=pickedChildId||rememberedChild();
+      try{
+        let session;
+        try{
+          session=await api('/sessions',{method:'POST',role:'none',
+            body:known?{...payload,child_id:known}:payload});
+        }catch(error){
+          // 記住的孩子已經被刪掉了（例如家長按過刪除資料），就當成新的孩子重新開始。
+          if(!known||error.status!==404)throw error;
+          forgetChild();dropFromRoster(known);pickedChildId=null;
+          session=await api('/sessions',{method:'POST',body:payload,role:'none'});
+        }
+        Object.assign(state,{sessionId:session.id,childId:session.child_id,sessionToken:session.session_token,
+          guardianToken:session.guardian_token,sessionExpiresAt:session.session_expires_at});
+        rememberChild(session.child_id);
+        upsertRoster(session.child_id,session.display_name||childName);
+        state.childName=session.display_name||childName;
+        saveSession();
+        $('#gate').classList.add('hidden');
+        setConnection('任務進行中',true);
+        setBusy(false);
+        await Promise.all([loadContent(),refreshProgress()]);
+        say(`${state.childName}你好！我是小芽，是 AI 寵物貓，不是真人。走到故事森林，換你當小老師教我念詩吧！`,
+            {state:'greeting',step:20,voice:false});
+      }catch(error){$('#gateError').textContent=error.message;console.error(error)}
+    }
+
+    /* ================= 朗讀評分（故事森林） ================= */
+    function renderAssessment(result){
+      $('#scorePanel').classList.remove('hidden');
+      state.latestAssessmentId=result.assessment_id;
+      const total=$('#scoreTotal');
+      if(result.score==null){
+        total.textContent='不計分';total.style.fontSize='1rem';
+        ['accuracy','completeness','fluency'].forEach(name=>{$(`#${name}Bar`).style.width='0';$(`#${name}Value`).textContent='—'});
+      }else{
+        total.textContent=result.score;total.style.fontSize='1.9rem';
+        Object.entries(result.breakdown||{}).forEach(([name,value])=>{
+          const bar=$(`#${name}Bar`),label=$(`#${name}Value`);
+          if(bar)bar.style.width=`${value}%`;
+          if(label)label.textContent=value;
+        });
+      }
+      renderEarned(result.rewards);
+      $('#measurementNote').textContent=result.measurement_note;
+      $('#assessmentFeedback').classList.remove('hidden');
+      renderCompanion(result.companion,'我有聽到囉，先用動作告訴你。再完成幾次任務，我就能開口說話了！');
+    }
+    // 後端的 reason_code -> 給孩子看的說法（app/domain/rewards.py 的 grant_rewards）
+    const REWARD_COPY={FIRST_COMPLETION:'完成朗讀',GOOD_READING:'念得不錯',
+      PERSONAL_BEST_IMPROVEMENT:'比上次進步',CONTENT_MASTERY:'精通這一篇'};
+    function renderEarned(rewards=[]){
+      const holder=$('#earned');
+      holder.querySelectorAll('.earned-chip').forEach(chip=>chip.remove());
+      holder.classList.toggle('hidden',!rewards.length);
+      rewards.forEach(reward=>{
+        const chip=document.createElement('span');
+        chip.className='earned-chip'+(reward.currency==='GEM'?' gem':'');
+        chip.textContent=`${reward.currency==='COIN'?'🪙':'💎'} +${reward.amount}`;
+        const note=document.createElement('small');
+        note.textContent=REWARD_COPY[reward.reason_code]||reward.reason_code;
+        chip.append(note);
+        holder.append(chip);
+      });
+    }
+    async function submitReading(transcript,confidence=null,durationMs=null){
+      if(!state.sessionId){showToast('請先完成家長確認。');return}
+      if(!state.selectedContent||!transcript.trim()){say('我沒有聽到內容，這次不算分。我們可以再試一次。',{state:'confused'});return}
+      setBusy(true);
+      $('#liveTranscript').textContent=transcript;
+      setCatState('thinking');
+      try{
+        const result=await api('/reading-attempts/transcript',{method:'POST',body:{
+          session_id:state.sessionId,
+          content_id:state.selectedContent.id,
+          request_id:uuid(),
+          transcript,
+          recognition_confidence:confidence,
+          duration_ms:durationMs&&durationMs>=250?Math.min(300000,Math.round(durationMs)):null
+        }});
+        renderAssessment(result);
+        await refreshProgress();
+      }catch(error){
+        reportError(error);
+        say('我這邊剛剛沒接上，請家長看一下畫面下方的訊息。',{state:'confused',voice:false});
+      }finally{setBusy(false)}
+    }
+    /* 語音輸入：瀏覽器自己大約 3-5 秒沒聲音就會結束，對正在想下一句的孩子太短。
+       改用 continuous 模式加自己的靜音碼錶，連續 LISTEN_SILENCE_MS 沒說話才收工；
+       中途瀏覽器自行結束會自動接回去。朗讀和跟小芽聊天共用這一套。 */
+    const LISTEN_SILENCE_MS=5000;
+    function startListening({onUpdate,onFinish,onCountdown}){
+      const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+      if(!Recognition){
+        say('這個瀏覽器不支援語音辨識，請家長改用 Chrome／Edge，或直接用打字的。',{state:'confused'});
+        return null;
+      }
+      const session={recognition:new Recognition(),finalText:'',confidence:null,
+        startedAt:performance.now(),lastVoiceAt:Date.now(),finished:false,stopReason:null,watchdog:null};
+      const recognition=session.recognition;
+      recognition.lang='zh-TW';
+      recognition.interimResults=true;
+      recognition.continuous=true;
+      recognition.maxAlternatives=1;
+      recognition.onresult=event=>{
+        let interim='';
+        for(let index=event.resultIndex;index<event.results.length;index++){
+          const alternative=event.results[index][0];
+          if(event.results[index].isFinal){session.finalText+=alternative.transcript;session.confidence=alternative.confidence||session.confidence}
+          else interim+=alternative.transcript;
+        }
+        session.lastVoiceAt=Date.now();
+        onUpdate(session.finalText+interim);
+      };
+      recognition.onspeechstart=()=>{session.lastVoiceAt=Date.now()};
+      recognition.onerror=event=>{
+        if(event.error==='no-speech')return;   // 交給靜音碼錶處理，不要中途嚇到孩子
+        session.finished=true;
+        say('語音辨識暫時失敗，請再試一次或請家長協助。',{state:'confused'});
+      };
+      recognition.onend=()=>{
+        if(!session.finished&&Date.now()-session.lastVoiceAt<LISTEN_SILENCE_MS){
+          try{recognition.start();return}catch(_){/* 起不來就照常收工 */}
+        }
+        clearInterval(session.watchdog);
+        onFinish(session.finalText.trim(),session.confidence,
+          performance.now()-session.startedAt,session.stopReason);
+      };
+      session.watchdog=setInterval(()=>{
+        const quietMs=Date.now()-session.lastVoiceAt;
+        const left=Math.ceil((LISTEN_SILENCE_MS-quietMs)/1000);
+        if(onCountdown)onCountdown(quietMs>1500&&left>0?left:null);
+        if(quietMs>=LISTEN_SILENCE_MS)session.stop('silence');
+      },500);
+      session.stop=reason=>{
+        session.stopReason=reason||'manual';
+        session.finished=true;
+        clearInterval(session.watchdog);
+        try{recognition.stop()}catch(_){/* 已經停了 */}
+      };
+      recognition.start();
+      return session;
+    }
+
+    let reading=null;
+    function startReading(){
+      if(reading){reading.stop('manual');return}
+      if(!state.sessionId){showToast('請先完成家長確認。');return}
+      const button=$('#readBtn');
+      button.classList.add('listening');
+      button.textContent='正在聽… 念好了按這裡';
+      $('#liveTranscript').textContent='請開始朗讀';
+      setCatState('listening');
+      reading=startListening({
+        onUpdate:heard=>{$('#liveTranscript').textContent=heard},
+        onCountdown:left=>{$('#listenHint').textContent=left?`還在聽…… ${left} 秒沒聲音就會自動送出`:''},
+        onFinish:(spoken,confidence,durationMs,reason)=>{
+          reading=null;
+          button.classList.remove('listening');
+          button.textContent='🎙️ 開始朗讀';
+          $('#listenHint').textContent='';
+          setCatState('idle');
+          if(spoken)submitReading(spoken,confidence,durationMs);
+          else if(reason==='silence')say('我等了一下都沒聽到聲音，這次不算分。準備好再按一次就好。',{state:'confused'});
+        }
+      });
+      if(!reading){
+        button.classList.remove('listening');
+        button.textContent='🎙️ 開始朗讀';
+        setCatState('idle');
+      }
+    }
+
+    /* ================= 和小芽獨處：對話 ================= */
+    function addChat(text,who){
+      const node=document.createElement('div');
+      node.className=`chat-message ${who}`;
+      node.textContent=text;
+      $('#chatLog').append(node);
+      $('#chatLog').scrollTop=$('#chatLog').scrollHeight;
+    }
+    let chatVoice=null;
+    let chatVoiceSubmitted=false;
+    function startChatVoice(){
+      if(chatVoice){chatVoice.stop('manual');return}
+      if(!state.sessionId){showToast('請先完成家長確認，再和小芽說話。');return}
+      const button=$('#chatMic'),input=$('#chatInput');
+      button.classList.add('listening');
+      input.value='';
+      input.placeholder='正在聽…… 說好了按一下麥克風';
+      setCatState('listening');
+      chatVoice=startListening({
+        onUpdate:heard=>{input.value=heard},
+        onCountdown:left=>{$('#chatListenHint').textContent=left?`還在聽…… ${left} 秒沒聲音就會送出`:''},
+        onFinish:(spoken,_confidence,_durationMs,reason)=>{
+          chatVoice=null;
+          button.classList.remove('listening');
+          input.placeholder='用說的，或打字告訴小芽';
+          $('#chatListenHint').textContent='';
+          setCatState('idle');
+          // 使用者自己按了送出，這句已經送掉了，不要再把逐字稿塞回輸入框。
+          if(chatVoiceSubmitted){chatVoiceSubmitted=false;input.value='';return}
+          if(spoken){input.value=spoken;submitChat()}
+          else{
+            if(reason==='silence')showToast('我沒有聽到聲音，再按一次麥克風試試看。');
+            say('我沒有聽到，你可以再說一次，或用打字的。',{state:'confused'});
+          }
+        }
+      });
+      if(!chatVoice){
+        button.classList.remove('listening');
+        input.placeholder='用說的，或打字告訴小芽';
+        setCatState('idle');
+      }
+    }
+    async function submitChat(){
+      if(chatVoice){chatVoiceSubmitted=true;chatVoice.stop('manual')}
+      const message=$('#chatInput').value.trim();
+      if(!message||!state.sessionId||state.busy)return;
+      $('#chatInput').value='';
+      addChat(message,'child');
+      setBusy(true);
+      setCatState('thinking');
+      try{
+        const result=await api('/dialogue',{method:'POST',body:{session_id:state.sessionId,request_id:uuid(),message}});
+        state.latestTurnId=result.turn_id;
+        addChat(renderCompanion(result.response,'（小芽點點頭，用動作回應你）'),'pet');
+        // SafetyLevel 是 IntEnum：0 NORMAL / 1 EMOTIONAL / 2 SENSITIVE / 3 CRITICAL。
+        if(Number(result.safety_level)>=2)showToast('這個話題請和身邊的大人談談，小芽沒辦法幫你判斷。');
+        $('#dialogueFeedback').classList.remove('hidden');
+      }catch(error){
+        reportError(error);
+        addChat('我這邊沒接上，請家長幫忙看一下。','pet');
+      }finally{setBusy(false)}
+    }
+    async function sendFeedback(kind,helpful){
+      if(!state.sessionId)return;
+      const body={session_id:state.sessionId,helpful,relevance:helpful?5:2};
+      if(kind==='assessment')body.assessment_id=state.latestAssessmentId;else body.dialogue_turn_id=state.latestTurnId;
+      try{await api('/feedback',{method:'POST',body});showToast('謝謝回饋，這會幫助大人改善小芽的回答。')}
+      catch(error){reportError(error)}
+      $(kind==='assessment'?'#assessmentFeedback':'#dialogueFeedback').classList.add('hidden');
+    }
+
+    /* ================= 家長專區：分級核准、結束、刪除資料 ================= */
+    async function approveLevel3(){
+      if(!state.childId){$('#parentError').textContent='目前沒有進行中的學習階段。';return}
+      if(!confirm('請由在場家長確認：要解鎖受限的基礎 LLM 對話嗎？'))return;
+      try{
+        state.level=await api(`/children/${state.childId}/level-3-approval`,{method:'PUT',role:'guardian',body:{approved:true}});
+        renderLevel();renderLevelPanel();
+        $('#parentError').textContent='';
+        showToast('已核准 Level 3。小芽的回答仍可能出錯，課業答案要一起查證。');
+      }catch(error){$('#parentError').textContent=error.message;console.error(error)}
+    }
+    async function finishSession(){
+      if(!state.sessionId||state.ending)return;
+      state.ending=true;
+      try{
+        await api(`/sessions/${state.sessionId}/end`,{method:'POST'});
+        const summary=await api(`/sessions/${state.sessionId}/summary`,{role:'guardian'});
+        const holder=$('#summaryContent');
+        holder.textContent='';
+        [`完成朗讀：${summary.completed_attempts} 次`,
+         `平均文字對照分數：${summary.average_score??'未計分'}`,
+         `本次獲得：${summary.earned_coins} 金幣、${summary.earned_gems} 鑽石`,
+         `教材：${summary.content_titles.join('、')||'無'}`,
+         summary.guardian_prompt].forEach(line=>{
+          const paragraph=document.createElement('p');
+          paragraph.textContent=line;
+          holder.append(paragraph);
+        });
+        $('#parentModal').classList.add('hidden');
+        $('#summaryModal').classList.remove('hidden');
+        setBusy(true);
+        setConnection('學習階段已結束',false);
+        say('今天先到這裡，請和家長說說你教了我什麼。',{state:'wave'});
+      }catch(error){
+        reportError(error);
+        $('#parentError').textContent=error.message;
+        state.ending=false;
+      }
+    }
+    async function deleteData(){
+      if(!state.childId){$('#parentError').textContent='目前沒有可刪除的孩童資料。';return}
+      if(!confirm('這會刪除這位孩子的評分、獎勵與事件資料，且無法復原。確定刪除嗎？'))return;
+      try{
+        await api(`/children/${state.childId}`,{method:'DELETE',role:'guardian',headers:{'X-Confirm-Delete':'DELETE'}});
+        try{localStorage.removeItem(equipKey())}catch(_){/* 無痕視窗會擋，忽略 */}
+        dropFromRoster(state.childId);
+        forgetChild();
+        clearSession();
+        location.reload();
+      }catch(error){$('#parentError').textContent=error.message;console.error(error)}
+    }
+    function startTimer(){
+      setInterval(()=>{
+        if(!state.sessionExpiresAt){$('#timer').textContent='尚未開始';return}
+        const seconds=Math.max(0,Math.floor((new Date(state.sessionExpiresAt)-Date.now())/1000));
+        $('#timer').textContent=`${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;
+        if(seconds===0&&state.sessionId&&!state.ending)finishSession();
+      },1000);
+    }
+
+    /* ================= 學習島地圖（本階段只有故事森林可進入） ================= */
+    const stations=[...document.querySelectorAll('.station')],map=$('#learningMap'),player=$('#mapPlayer');
+    const activities={
+      story:{title:'故事森林',text:'選一首詩，當小老師念給小芽聽，牠會學著念。',ready:true},
+      math:{title:'數學山丘',text:'數字與解謎活動還在建置中，今天先去故事森林。',ready:false},
+      art:{title:'創作湖',text:'畫圖活動還在建置中，今天先去故事森林。',ready:false},
+      home:{title:'回家基地',text:'成果分享建置中；家長摘要請從右上角「家長專區」進入。',ready:false}
+    };
+    let playerX=20,playerY=46,selectedKey='story',walkTimer;
+    const clampPlayer=()=>{
+      const xPadding=(player.offsetWidth/2+10)/map.clientWidth*100;
+      const yTopPadding=(player.offsetHeight*.64+8)/map.clientHeight*100;
+      const yBottomPadding=(player.offsetHeight*.42+104)/map.clientHeight*100;
+      playerX=Math.max(xPadding,Math.min(100-xPadding,playerX));
+      playerY=Math.max(yTopPadding,Math.min(100-yBottomPadding,playerY));
+    };
+    const renderPlayer=()=>{
+      // 地圖被隱藏時 clientWidth 是 0，算出來會是 Infinity，會把小芽的座標弄壞。
+      if(!map.clientWidth||!map.clientHeight)return;
+      clampPlayer();
+      player.style.left=playerX+'%';player.style.top=playerY+'%';
+      player.classList.add('walking');clearTimeout(walkTimer);walkTimer=setTimeout(()=>player.classList.remove('walking'),260);
+      let nearest=null,distance=Infinity;
+      stations.forEach(station=>{
+        const x=station.offsetLeft/map.clientWidth*100,y=station.offsetTop/map.clientHeight*100;
+        const d=Math.hypot(playerX-x,playerY-y);
+        if(d<distance){distance=d;nearest=station}
+      });
+      if(distance<14&&nearest.dataset.key!==selectedKey)selectStation(nearest,false);
+    };
+    const selectStation=(station,move=true)=>{
+      selectedKey=station.dataset.key;
+      stations.forEach(item=>item.classList.toggle('active',item===station));
+      $('#mapActivityTitle').textContent=activities[selectedKey].title;
+      $('#mapActivityText').textContent=activities[selectedKey].text;
+      if(move){
+        const nextX=station.offsetLeft/map.clientWidth*100,nextY=station.offsetTop/map.clientHeight*100+11;
+        player.dataset.direction=Math.abs(nextX-playerX)>Math.abs(nextY-playerY)?(nextX>playerX?'right':'left'):(nextY>playerY?'down':'up');
+        playerX=nextX;playerY=nextY;renderPlayer();
+      }
+    };
+    const movePlayer=direction=>{
+      const amount=4;
+      player.dataset.direction=direction;
+      if(direction==='left')playerX-=amount;
+      if(direction==='right')playerX+=amount;
+      if(direction==='up')playerY-=amount;
+      if(direction==='down')playerY+=amount;
+      renderPlayer();
+    };
+    function enterActivity(key){
+      const activity=activities[key];
+      if(!activity.ready){showToast(`${activity.title}還在建置中，今天先一起去故事森林。`);return}
+      if(!state.sessionId){showToast('請先完成家長確認。');return}
+      showView('storyView');
+      say('歡迎來到故事森林！選一首詩，慢慢念給我聽好嗎？',{state:'greeting',step:20});
+    }
+    // 點島 = 直接進去；被鎖的島只會給提示。
+    stations.forEach(station=>station.addEventListener('click',event=>{
+      event.stopPropagation();
+      selectStation(station);
+      enterActivity(station.dataset.key);
+    }));
+    player.addEventListener('click',event=>{event.stopPropagation();enterCatRoom()});
+    document.querySelectorAll('[data-move]').forEach(button=>button.addEventListener('click',event=>{event.stopPropagation();movePlayer(button.dataset.move)}));
+    map.addEventListener('click',event=>{
+      if(event.target.closest('button')||event.target.closest('.activity-card'))return;
+      const box=map.getBoundingClientRect(),nextX=(event.clientX-box.left)/box.width*100,nextY=(event.clientY-box.top)/box.height*100;
+      player.dataset.direction=Math.abs(nextX-playerX)>Math.abs(nextY-playerY)?(nextX>playerX?'right':'left'):(nextY>playerY?'down':'up');
+      playerX=nextX;playerY=nextY;renderPlayer();
+    });
+    addEventListener('keydown',event=>{
+      if(currentView!=='mapView'||['INPUT','TEXTAREA'].includes(document.activeElement.tagName))return;
+      const moves={ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right',D:'right',ArrowUp:'up',w:'up',W:'up',ArrowDown:'down',s:'down',S:'down'};
+      if(moves[event.key]){event.preventDefault();movePlayer(moves[event.key])}
+    });
+
+    /* ================= Demo 展示控制台 ================= */
+    const demoCopy={
+      greeting:'嗨！你好呀，我很期待跟你一起學習！',
+      confused:'我有點不太明白，可以再教我一次嗎？',
+      happy:'哇，我懂了！原來是這樣！',
+      sad:'這一題有點難，我們可以慢慢來。',
+      idle:'我準備好繼續學習了。',
+      wave:'嗨！小芽在跟你揮手。',
+      jump:'太好了！我們完成一個步驟了！',
+      look:'我正在左右看看，整理剛剛的線索。',
+      shake:'嗯嗯，這個答案好像不太對。',
+      listening:'我的貓耳朵豎起來了，我正在聽。',
+      bellyUp:'小芽翻過來放鬆一下，準備好再一起學習。',
+      freeRoam:'小芽要在活動區裡自在散步囉！'
+    };
+    // Demo 用的等級切換：打後端 development-only 的 endpoint，真的改 child.current_level。
+    function renderDemoLevel(){
+      const level=state.level?.current_level||1;
+      document.querySelectorAll('.level-btn').forEach(button=>
+        button.classList.toggle('active',Number(button.dataset.level)===level));
+    }
+    async function setDemoLevel(level){
+      if(!state.childId){showToast('請先完成家長確認，才能切換等級。');return}
+      try{
+        state.level=await api(`/children/${state.childId}/demo-level`,{method:'PUT',role:'guardian',body:{level}});
+        renderLevel();renderLevelPanel();
+        showToast(`已切換到 Level ${level}：${LEVEL_COPY[level]}`);
+      }catch(error){reportError(error)}
+    }
+    document.querySelectorAll('.voice-btn').forEach(button=>
+      button.addEventListener('click',()=>setVoicePreference(button.dataset.voice)));
+    renderVoiceButtons();
+    document.querySelectorAll('.level-btn').forEach(button=>
+      button.addEventListener('click',()=>setDemoLevel(Number(button.dataset.level))));
+    document.querySelectorAll('.sim-btn[data-state]').forEach(button=>button.addEventListener('click',()=>{
+      const next=button.dataset.state;
+      say(demoCopy[next],{state:next});
+      clearTimeout(catResetTimer);
+      catResetTimer=setTimeout(()=>setCatState('idle'),3500);
+    }));
+
+    /* ================= 事件綁定 ================= */
+    gateChecks.forEach(box=>box.addEventListener('change',syncGate));
+    $('#gateForm').addEventListener('submit',startSession);
+    $('#childName').addEventListener('input',syncGate);
+    (()=>{const last=rememberedChild(),entry=readRoster().find(item=>item.id===last);
+      if(entry){pickedChildId=entry.id;$('#childName').value=entry.name}
+      renderRoster();})();
+    $('#contentSelect').addEventListener('change',renderContent);
+    $('#askZhuyinYes').addEventListener('click',revealZhuyin);
+    $('#askSelectionYes').addEventListener('click',revealSelectionZhuyin);
+    $('#askSelectionNo').addEventListener('click',()=>{closeSelectionAsk();getSelection().removeAllRanges()});
+    $('#undoZhuyin').addEventListener('click',clearAllZhuyin);
+    $('#askZhuyinNo').addEventListener('click',closeZhuyinAsk);
+    $('#readBtn').addEventListener('click',startReading);
+    $('#submitTranscript').addEventListener('click',()=>submitReading($('#transcriptInput').value));
+    $('#enterActivity').addEventListener('click',()=>enterActivity(selectedKey));
+    document.querySelectorAll('[data-back]').forEach(button=>button.addEventListener('click',()=>showView(button.dataset.back)));
+    $('#catBack').addEventListener('click',()=>showView(previousView==='catView'?'mapView':previousView));
+    $('#itemChest').addEventListener('click',()=>setItemChest($('#itemCard').classList.contains('hidden')));
+    $('#itemClose').addEventListener('click',()=>setItemChest(false));
+    robot.addEventListener('click',()=>{if(currentView!=='catView')enterCatRoom()});
+    robot.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&currentView!=='catView'){event.preventDefault();enterCatRoom()}});
+    $('#talkBtn').addEventListener('click',enterCatRoom);
+    $('#chatMic').addEventListener('click',startChatVoice);
+    $('#chatSend').addEventListener('click',submitChat);
+    $('#chatInput').addEventListener('keydown',event=>{if(event.key==='Enter')submitChat()});
+    $('#assessmentFeedback').addEventListener('click',event=>{if(event.target.dataset.helpful)sendFeedback('assessment',event.target.dataset.helpful==='true')});
+    $('#dialogueFeedback').addEventListener('click',event=>{if(event.target.dataset.helpful)sendFeedback('dialogue',event.target.dataset.helpful==='true')});
+    $('#parentBtn').addEventListener('click',()=>{$('#parentError').textContent='';$('#parentModal').classList.remove('hidden')});
+    $('#closeParent').addEventListener('click',()=>$('#parentModal').classList.add('hidden'));
+    $('#parentApprove').addEventListener('click',approveLevel3);
+    $('#endSession').addEventListener('click',finishSession);
+    $('#deleteData').addEventListener('click',deleteData);
+    $('#switchChild').addEventListener('click',()=>{
+      if(!confirm('要換一位孩子重新開始嗎？目前這位孩子的紀錄會留在後端，等一下在門口點名字就能接回來。'))return;
+      forgetChild();
+      clearSession();
+      location.reload();
+    });
+    $('#closeSummary').addEventListener('click',()=>{clearSession();location.reload()});
+    $('#replayBtn').addEventListener('click',()=>speak(speech.textContent));
+    $('#stopBtn').addEventListener('click',()=>{stopSpeaking();setCatState('idle');setSpeech('已經停下來了。需要時請和家長一起繼續。')});
+    addEventListener('keydown',event=>{if(event.key==='Escape'&&currentView==='catView'&&!$('#itemCard').classList.contains('hidden'))setItemChest(false)});
+    addEventListener('resize',renderPlayer);
+
+    /* ================= 啟動 ================= */
+    async function initialize(){
+      try{
+        const health=await api('/health',{role:'none'});
+        voiceBackend=health.providers.tts&&health.providers.tts!=='fake';
+        setConnection(`${health.providers.llm} 已連線`,true);
+      }catch(error){
+        setConnection('後端未連線',false);
+        showToast(error.message);
+      }
+      if(!restoreSession())return;
+      try{
+        $('#gate').classList.add('hidden');
+        await Promise.all([loadContent(),refreshProgress()]);
+        setBusy(false);
+        say('歡迎回來！走到故事森林，繼續教我念詩吧。',{state:'greeting',step:20,voice:false});
+      }catch(error){
+        console.error(error);
+        clearSession();
+        $('#gate').classList.remove('hidden');
+      }
+    }
+    $('#catSlotStory').append(catUnit);   // 3D 小芽的預設位置
+    $('#worldFooter').innerHTML=VIEWS.mapView.footer;
+    addChat('家長開始之後，你可以在這裡和小芽聊心情或問課業問題。','pet');
+    syncGate();
+    setBusy(false);
+    startTimer();
+    initialize();
+  </script>
+</body>
+</html>

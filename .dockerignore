@@ -1,0 +1,16 @@
+# 這些檔案不能進映像檔：金鑰、本機資料庫、虛擬環境與快取
+**/.env
+**/.env.*
+!**/.env.example
+**/.venv/
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.ruff_cache/
+**/.mypy_cache/
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+.git/
+docs/
+待查項目/

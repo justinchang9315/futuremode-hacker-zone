@@ -1,0 +1,2 @@
+"""Child Teaching Companion backend."""
+
