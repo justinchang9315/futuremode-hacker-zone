@@ -111,8 +111,8 @@ flowchart TB
 ### 1. 取得專案
 
 ```powershell
-git clone https://github.com/<你的帳號>/<儲存庫名稱>.git
-cd <儲存庫名稱>
+git clone https://github.com/justinchang9315/futuremode-hacker-zone.git
+cd futuremode-hacker-zone
 ```
 
 ### 2. 啟動（一個終端機就夠）
