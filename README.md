@@ -7,7 +7,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.116-0e7c86.svg)](https://fastapi.tiangolo.com/)
 [![Three.js](https://img.shields.io/badge/Three.js-r128-18314f.svg)](https://threejs.org/)
 
-**線上 Demo：<!-- 部署後填入公開網址 --> _尚未部署_**　｜　本機執行請見[快速開始](#安裝與執行)。
+**線上 Demo：(https://futuremode-hacker-zone.onrender.com/　｜　本機執行請見[快速開始](#安裝與執行)。
 
 > [!IMPORTANT]
 > 本專案是研究與展示原型，不是正式教學、醫療或心理諮商服務。未經家長陪同與專業安全審查，不應直接提供給真實兒童使用。詳見 [SECURITY.md](SECURITY.md) 與[限制與未來工作](#限制與未來工作)。
@@ -97,7 +97,7 @@ flowchart TB
 | 資料層 | SQLAlchemy、Alembic、SQLite；保留 PostgreSQL Adapter | 資料模型、交易與資料庫版本遷移 |
 | 文字處理 | pypinyin | 教材與介面的繁體中文注音標註 |
 | 品質檢查 | pytest、Ruff | 自動測試、程式碼風格與靜態檢查 |
-| Sponsor 技術 | **待依參賽規則填寫** | 尚未收到指定 Sponsor 名稱，不自行推定 |
+| Sponsor 技術 |OPEN AI |
 
 ## 安裝與執行
 
@@ -194,8 +194,8 @@ uv run pytest
 
 ## 作品展示
 
-- 線上作品網址：**待部署後填寫**
-- 評選影片：**待上傳後填寫**
+- 線上作品網址：''https://futuremode-hacker-zone.onrender.com/
+- 評選影片：'https://youtu.be/fpTVF_Z-jgo'
 - 本機執行：前端 `http://127.0.0.1:5173`、API 文件 `http://127.0.0.1:8000/docs`
 
 ## 公開部署
@@ -301,8 +301,11 @@ Python 套件版本記錄於 `backend/uv.lock`。API Key、Token、孩童資料�
 
 | 姓名 | 分工 |
 | --- | --- |
-| **待填寫** | 專案規劃／AI Orchestrator／後端／前端／3D／測試等實際分工待確認 |
-
+| Justin | 專案規劃／AI Orchestrator／後端／測試 |
+| Gerald | ／前端／3D／測試 |
+| Jay | AI Orchestrato/後端/ |
+| Mick | 後端／測試 |
+| Yiling | AI Orchestrator／前端／3D／測試 |
 ## License
 
 本專案的**原始碼與文件**採用 [MIT License](LICENSE)。
